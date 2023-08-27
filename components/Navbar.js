@@ -1,6 +1,7 @@
 import React from 'react'
 import { View } from 'react-native'
 import { StyleSheet } from 'react-native'
+import { Image } from 'react-native'
 const Navbar = () => {
   return (
     <View style={styles.navbarcontainer}>
@@ -15,11 +16,17 @@ const Navbar = () => {
 
 const styles = StyleSheet.create({
     navbarcontainer:{
-        height: '10%',
-        flexDirection: 'row'
+        height: '5.5%',
+        width: '100%',
+        flexDirection: 'row',
+        backgroundColor: '#1d1c1d',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: 15,
+        flex: 1
     },
     image:{
-        height: '10%',
+        height: '70%',
         width: '20%',
         objectFit: 'contain'
     }

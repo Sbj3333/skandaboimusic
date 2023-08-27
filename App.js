@@ -9,6 +9,7 @@ export default function App() {
     <View style={styles.container}>
       {/* <View style={styles.statusbar} /> */}
       <StatusBar barStyle='dark-content'/>
+      {/* <Login/> */}
       <Home/>
     </View>
   );
