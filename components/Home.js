@@ -9,6 +9,7 @@ import Recents from './Recents'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Navbar from './Navbar'
 import Minisong from './Minisong'
+import Popularplaylist from './Popularplaylist'
 // import LinearGradient from 'react-native-linear-gradient'
 
 
@@ -21,7 +22,7 @@ const Home = () => {
       <View style={styles.greetingcontainer}>
         <Text style={styles.greeting}>{greeting}</Text>
       </View>
-      {/* <ScrollView style={styles.scrollview}> */}
+      {/* <View style={styles.scrollview}> */}
       <View style={styles.recentcontainer}>
         <View style={styles.recentrow}>
           <Recents/>
@@ -39,18 +40,25 @@ const Home = () => {
           <Recents/>
         </View>
       </View>
-      {/* </ScrollView> */}
       {/* <LinearGradient colors={gradient} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}> */}
       <View style={styles.popular}>
         <Text style={styles.populartext} >Popular playlists</Text>
       </View>
+      {/* <ScrollView style={styles.scrollview}>
+        <View style={styles.playlistcontainer}>
+          <Popularplaylist/>
+          <Popularplaylist/>
+        </View>
+      </ScrollView> */}
       <View style={styles.minisong}>
         <Minisong/>
       </View>
       <View style={styles.navbar}>
         <Navbar />
       </View>
-      {/* </LinearGradient> */}
+        {/* </LinearGradient> */}
+      {/* </View> */}
+
     </SafeAreaView>
   )
 }
@@ -96,7 +104,9 @@ const styles = StyleSheet.create({
   },
 
   scrollview:{
-    backgroundColor: 'red'
+    // backgroundColor: 'red', 
+    height: 20,
+    flex: 1
   },
 
   navbar:{
@@ -133,6 +143,14 @@ const styles = StyleSheet.create({
     alignItems:'center',
     bottom:'7%',
 
+  },
+  playlistcontainer:{
+    height: '20%', 
+    backgroundColor: 'red', 
+    width: '100%', 
+    flex: 1,
+  
   }
+  
 })
 export default Home

@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
   songcontainer:{
     // justifyContent: 'center',
     flexDirection: 'row',
-    backgroundColor: '#706d92',
+    backgroundColor: '#388fd5',
     // alignItems: 'center',
     flex: 1,
     width: '95%',
