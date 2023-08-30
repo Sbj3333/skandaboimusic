@@ -15,7 +15,9 @@ const Songplayer = () => {
           </View>
           <Image style={styles.options} source={require('../assets/options_icon.png')}/>
         </View>
-        <Image source={require('../assets/music2.jpeg')}/>
+        <View style={styles.bannercontainer}>
+          <Image source={require('../assets/music2.jpeg')} style={styles.banner}/>
+        </View>
         <View style={styles.songnameandliked}>
           <Text style={styles.songname}>Song</Text>
           <Image style={styles.liked} source={require('../assets/heartopen.png')}/>
@@ -37,12 +39,12 @@ const Songplayer = () => {
 
 const styles = StyleSheet.create({
   main:{
-    flex: 1
+    flex: 1,
   },
 
   firstcontainer:{
     flexDirection: 'row',
-    backgroundColor:'green',
+    backgroundColor:'#1d1c1d',
     height:'10%',
     justifyContent: 'center',
     width: '100%',
@@ -54,11 +56,9 @@ const styles = StyleSheet.create({
     height:'55%', 
     width: '10%',
     objectFit:'contain',
-    // backgroundColor: 'black'
   },
 
   textcontainer: {
-    // backgroundColor: 'blue',
     height: '60%',
     gap: 5,
     marginTop: 10,
@@ -66,7 +66,6 @@ const styles = StyleSheet.create({
   },
 
   options:{
-    // backgroundColor: 'black',
     height: '50%',
     width: '10%',
     objectFit: 'contain'
@@ -81,9 +80,46 @@ const styles = StyleSheet.create({
   library:{
     color: 'white',
     fontSize: 10
+  },
+
+  bannercontainer:{
+    height: '60%',
+    backgroundColor: '#1d1c1d',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+
+  banner: {
+    height: '70%',
+    width: '90%',
+    objectFit: 'contain',
+    // borderRadius: 20
+  },
+
+  songnameandliked:{
+    backgroundColor: 'green',
+    height: '9%',
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    gap: '10%'
+  },
+
+  songname:{
+    color: 'white',
+    fontSize: 30,
+    marginTop: '-2%'
+
+
+  },
+
+  liked:{
+    height: '40%',
+    width: '10%',
+    objectFit: 'contain',
+    backgroundColor: 'red'
   }
-
-
 
 
 })
