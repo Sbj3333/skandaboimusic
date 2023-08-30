@@ -5,6 +5,7 @@ import Login from './components/Login';
 import { screenheight, screenwidth } from './components/Login'
 import Song from './components/Song';
 import Songplayer from './components/Songplayer';
+import Playlist from './components/Playlist';
 
 export default function App() {
   return (
@@ -13,7 +14,8 @@ export default function App() {
       <StatusBar barStyle='dark-content'/>
       {/* <Login/> */}
       {/* <Home/> */}
-      <Songplayer/>
+      {/* <Songplayer/> */}
+      <Playlist/>
     </View>
   );
 }

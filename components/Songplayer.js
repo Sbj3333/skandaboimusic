@@ -19,7 +19,9 @@ const Songplayer = () => {
           <Image source={require('../assets/music2.jpeg')} style={styles.banner}/>
         </View>
         <View style={styles.songnameandliked}>
-          <Text style={styles.songname}>Song</Text>
+          <View style={styles.songnamecontainer}>
+            <Text style={styles.songname}>Song</Text>
+          </View>
           <Image style={styles.liked} source={require('../assets/heartopen.png')}/>
         </View>
         <View style={styles.songprogress}>
@@ -97,29 +99,83 @@ const styles = StyleSheet.create({
   },
 
   songnameandliked:{
-    backgroundColor: 'green',
+    backgroundColor: '#1d1c1d',
     height: '9%',
     width: '100%',
     flexDirection: 'row',
-    justifyContent: 'center', 
+    justifyContent: 'space-around', 
     alignItems: 'center', 
-    gap: '10%'
+  },
+
+  songnamecontainer:{
+    // backgroundColor: 'red',
+    width: '50%',
+
   },
 
   songname:{
     color: 'white',
     fontSize: 30,
-    marginTop: '-2%'
+    marginTop: '-2%',
+    // paddingLeft: 30
 
 
   },
 
   liked:{
-    height: '40%',
+    height: '50%',
     width: '10%',
     objectFit: 'contain',
-    backgroundColor: 'red'
+    // backgroundColor: 'red',
+  },
+
+  songprogress: {
+    height: '5%',
+    backgroundColor: '#1d1c1d'
+  },
+
+  songcontrol: {
+    height: '18%',
+    backgroundColor: '#1d1c1d',
+    flexDirection: 'row',
+    gap: 12,
+    justifyContent: 'center',
+    alignItems: 'center'
+
+  },
+
+  shuffle:{
+    height: '25%',
+    width: '10%',
+    objectFit: 'contain',
+    marginTop: '-15%'
+  },
+
+  prevnext:{
+    height: '30%',
+    width: '15%',
+    objectFit: 'contain',
+    marginTop: '-15%'
+
+  },
+
+  playpause: {
+    height: '45%',
+    width: '20%',
+    objectFit: 'contain',
+    marginTop: '-15%'
+
+  },
+
+  repeat: {
+    height: '25%',
+    width: '10%',
+    objectFit: 'contain',
+    marginTop: '-15%'
+
   }
+
+
 
 
 })
