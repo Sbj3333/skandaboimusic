@@ -1,8 +1,13 @@
 import React from 'react'
+import { Text, View } from 'react-native'
+import Playlist from './Playlist'
 
 const Library = () => {
   return (
-    <div>Library</div>
+    <View>
+      <Text style={styles.text}>Your Library</Text>
+      <Playlist/>
+    </View>
   )
 }
 

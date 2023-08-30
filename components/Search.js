@@ -1,8 +1,14 @@
 import React from 'react'
+import { TextInput, View } from 'react-native'
 
 const Search = () => {
   return (
-    <div>Search</div>
+    <View>
+      <TextInput placeholder='Search' style={styles.searchbar}/>
+      <View style={styles.songsuggestions}>
+        
+      </View>
+    </View>
   )
 }
 
