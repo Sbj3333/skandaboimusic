@@ -3,6 +3,8 @@ import { StyleSheet, Text, View } from 'react-native';
 import Home from './components/Home';
 import Login from './components/Login';
 import { screenheight, screenwidth } from './components/Login'
+import Song from './components/Song';
+import Songplayer from './components/Songplayer';
 
 export default function App() {
   return (
@@ -10,7 +12,8 @@ export default function App() {
       {/* <View style={styles.statusbar} /> */}
       <StatusBar barStyle='dark-content'/>
       {/* <Login/> */}
-      <Home/>
+      {/* <Home/> */}
+      <Songplayer/>
     </View>
   );
 }
