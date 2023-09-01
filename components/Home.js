@@ -22,7 +22,6 @@ const Home = () => {
       <View style={styles.greetingcontainer}>
         <Text style={styles.greeting}>{greeting}</Text>
       </View>
-      {/* <View style={styles.scrollview}> */}
       <View style={styles.recentcontainer}>
         <View style={styles.recentrow}>
           <Recents/>
@@ -44,21 +43,12 @@ const Home = () => {
       <View style={styles.popular}>
         <Text style={styles.populartext} >Popular playlists</Text>
       </View>
-      {/* <ScrollView style={styles.scrollview}>
-        <View style={styles.playlistcontainer}>
-          <Popularplaylist/>
-          <Popularplaylist/>
-        </View>
-      </ScrollView> */}
       <View style={styles.minisong}>
         <Minisong/>
       </View>
       <View style={styles.navbar}>
         <Navbar />
       </View>
-        {/* </LinearGradient> */}
-      {/* </View> */}
-
     </SafeAreaView>
   )
 }
@@ -83,20 +73,18 @@ const styles = StyleSheet.create({
     fontWeight:'bold',
   },
   recentcontainer:{
-    marginTop: '3%',
-    justifyContent: 'space-around',
-    height: '30%',
+    padding: 10,
+    // justifyContent: 'center',
+    height: 250,
     // flex: 1,
-    width: '100%',
     backgroundColor: '#1d1c1d',
     alignItems: 'center',
-    gap: -30
+    gap: -10
 
   },
   recentrow:{
     flexDirection: 'row',
     flex: 1,
-    marginTop: '0%',
 
   },
   gap: {
@@ -121,8 +109,8 @@ const styles = StyleSheet.create({
   },
   
   popular:{
-    height: '10%',
-    backgroundColor: '#1d1c1d',
+    height: 50,
+    backgroundColor: 'red',
     marginTop: '-8%'
   },
    

@@ -13,9 +13,9 @@ export default function App() {
       {/* <View style={styles.statusbar} /> */}
       <StatusBar barStyle='dark-content'/>
       {/* <Login/> */}
-      {/* <Home/> */}
+      <Home/>
       {/* <Songplayer/> */}
-      <Playlist/>
+      {/* <Playlist/> */}
     </View>
   );
 }

@@ -10,8 +10,26 @@ const Playlist = () => {
           <Text style={styles.text}>Playlist Name</Text>
           <Image style={styles.playpause} source={require('../assets/pausesong.png')}/>
         </View>
-        <ScrollView>
-          {/* <Song/> */}
+        <ScrollView contentContainerStyle={styles.scrollview}>
+          <Song/>
+          <Song/>
+          <Song/>
+          <Song/>
+          <Song/>
+          <Song/>
+          <Song/>
+          <Song/>
+          <Song/>
+          <Song/>
+          <Song/>
+          <Song/>
+          <Song/>
+          <Song/>
+          <Song/>
+          <Song/>
+          <Song/>
+          <Song/>
+          <Song/>
         </ScrollView>
     </SafeAreaView>
   )
@@ -20,8 +38,8 @@ const Playlist = () => {
 const styles = StyleSheet.create({
   container:{
     backgroundColor: '#1d1c1d',
-    flex: 1 
-
+    flex: 1,
+    gap: 1,
   },
 
   header:{
@@ -43,6 +61,10 @@ const styles = StyleSheet.create({
     width: '25%',
     objectFit:'contain',
     // backgroundColor:'blue'
+  },
+
+  scrollview:{
+    gap: 2
   }
 
   

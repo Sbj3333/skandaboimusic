@@ -13,7 +13,7 @@ const Recents = () => {
 }
 const styles = StyleSheet.create({
     container:{
-        height: '60%',
+        height: 60,
         width: '45%',
         backgroundColor: 'rgba(105, 103, 102, 0.5)',
         // flex: 1,
