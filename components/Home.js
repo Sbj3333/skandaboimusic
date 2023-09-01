@@ -10,6 +10,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import Navbar from './Navbar'
 import Minisong from './Minisong'
 import Popularplaylist from './Popularplaylist'
+import Popularplaylistrow from './Popularplaylistrow'
 // import LinearGradient from 'react-native-linear-gradient'
 
 
@@ -22,27 +23,35 @@ const Home = () => {
       <View style={styles.greetingcontainer}>
         <Text style={styles.greeting}>{greeting}</Text>
       </View>
-      <View style={styles.recentcontainer}>
-        <View style={styles.recentrow}>
-          <Recents/>
-          <View style={styles.gap}/>
-          <Recents/>
+      <ScrollView>
+        <View style={styles.recentcontainer}>
+          <View style={styles.recentrow}>
+            <Recents/>
+            <View style={styles.gap}/>
+            <Recents/>
+          </View>
+          <View style={styles.recentrow}>
+            <Recents/>
+            <View style={styles.gap}/>
+            <Recents/>
+          </View>
+          <View style={styles.recentrow}>
+            <Recents/>
+            <View style={styles.gap}/>
+            <Recents/>
+          </View>
         </View>
-        <View style={styles.recentrow}>
-          <Recents/>
-          <View style={styles.gap}/>
-          <Recents/>
+        {/* <LinearGradient colors={gradient} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}> */}
+        <View style={styles.popular}>
+          <Text style={styles.populartext} >Popular playlists</Text>
         </View>
-        <View style={styles.recentrow}>
-          <Recents/>
-          <View style={styles.gap}/>
-          <Recents/>
+        <View>
+          <Popularplaylistrow/>
+          <Popularplaylistrow/>
+          <Popularplaylistrow/>
+          <Popularplaylistrow/>
         </View>
-      </View>
-      {/* <LinearGradient colors={gradient} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}> */}
-      <View style={styles.popular}>
-        <Text style={styles.populartext} >Popular playlists</Text>
-      </View>
+      </ScrollView>
       <View style={styles.minisong}>
         <Minisong/>
       </View>
@@ -109,9 +118,9 @@ const styles = StyleSheet.create({
   },
   
   popular:{
-    height: 50,
-    backgroundColor: 'red',
-    marginTop: '-8%'
+    height: 65,
+    backgroundColor: '#1d1c1d',
+    marginTop: -15
   },
    
   populartext:{
@@ -132,13 +141,8 @@ const styles = StyleSheet.create({
     bottom:'7%',
 
   },
-  playlistcontainer:{
-    height: '20%', 
-    backgroundColor: 'red', 
-    width: '100%', 
-    flex: 1,
   
-  }
+  
   
 })
 export default Home

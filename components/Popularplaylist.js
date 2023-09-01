@@ -13,8 +13,8 @@ const Popularplaylist = () => {
 
 const styles = StyleSheet.create({
     playlistcontainer:{
-        height: '25%', 
-        width: '40%',
+        height: 170, 
+        width: '35%',
         flexDirection: 'column',
         backgroundColor: 'rgba(105, 103, 102, 0.5)',
         // alignItems: 'center',
