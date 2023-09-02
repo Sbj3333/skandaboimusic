@@ -1,6 +1,7 @@
 {
   "expo": {
     "name": "skandaboimusic",
+    "scheme": "skandaboimusic",
     "slug": "skandaboimusic",
     "version": "1.0.0",
     "orientation": "portrait",

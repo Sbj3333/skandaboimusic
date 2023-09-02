@@ -1,12 +1,14 @@
 import React from 'react'
-import { Image, StyleSheet, View } from 'react-native'
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { Text } from 'react-native'
 
-const Popularplaylist = () => {
+const Popularplaylist = ({navigation}) => {
   return (
     <View style={styles.playlistcontainer}>
-        <Image source={require('../assets/music2.jpeg')} style={styles.playlistimage}/>
-        <Text style={styles.playlistname}>Playlist</Text>
+        <TouchableOpacity onPress={() => navigation.navigate('Playlist')}>
+            <Image source={require('../assets/music2.jpeg')} style={styles.playlistimage}/>
+            <Text style={styles.playlistname}>Playlist</Text>
+        </TouchableOpacity>
     </View>
   )
 }

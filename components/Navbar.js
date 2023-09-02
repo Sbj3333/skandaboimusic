@@ -1,14 +1,29 @@
 import React from 'react'
-import { View } from 'react-native'
+import { TouchableOpacity, View } from 'react-native'
 import { StyleSheet } from 'react-native'
 import { Image } from 'react-native'
-const Navbar = () => {
+
+// import { NavigationContainer } from '@react-navigation/native';
+// import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+const Navbar = ({navigation}) => {
   return (
     <View style={styles.navbarcontainer}>
-        <Image source={require('../assets/home_icon.png')} style={styles.image}/>
-        <Image source={require('../assets/search_icon.png')} style={styles.image}/>
-        <Image source={require('../assets/music_icon.png')} style={styles.image}/>
-        <Image source={require('../assets/profile_icon.png')} style={styles.image}/>
+        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+          <Image source={require('../assets/home_icon.png')} style={styles.image}/>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => navigation.navigate('Search')}>
+          <Image source={require('../assets/search_icon.png')} style={styles.image}/>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => navigation.navigate('Library')}>
+          <Image source={require('../assets/music_icon.png')} style={styles.image}/>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+          <Image source={require('../assets/profile_icon.png')} style={styles.image}/>
+        </TouchableOpacity>
     </View>
   )
 }

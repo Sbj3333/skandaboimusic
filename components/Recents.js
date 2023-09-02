@@ -1,14 +1,17 @@
 import React from 'react'
-import { Text } from 'react-native'
+import { Text, TouchableOpacity } from 'react-native'
 import { View } from 'react-native'
 import { StyleSheet } from 'react-native'
 import { Image } from 'react-native'
-const Recents = () => {
+const Recents = ({navigation}) => {
   return (
-    <View style={styles.container}>
-        <Image source={require('../assets/music2.jpeg')} style={styles.image}/>
-        <Text style={styles.text}>Song</Text>
-    </View>
+    <TouchableOpacity onPress={() => navigation.navigate('Songplayer')}>
+      <View style={styles.container}>
+          <Image source={require('../assets/music2.jpeg')} style={styles.image}/>
+          <Text style={styles.text}>Song</Text>
+      </View>
+    </TouchableOpacity>
+
   )
 }
 const styles = StyleSheet.create({

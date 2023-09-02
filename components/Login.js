@@ -2,19 +2,26 @@ import React from 'react'
 import { Text, Image, StyleSheet, View, Dimensions, TouchableOpacity} from 'react-native'
 import { Button } from 'react-native'
 import { Alert } from 'react-native'
+import { startSpotifyPKCEFlow } from './Auth'
 
 const Login = () => {
-    const handlePress = () => {
-        Alert.alert('Button Pressed', 'You pressed the button!');
-      };
-    return (
+    // const handlePress = async () => {
+    //     try {
+    //       await startSpotifyPKCEFlow();
+    //     } catch (error) {
+    //       Alert.alert('Authentication Error', 'There was an issue with Spotify authentication.');
+    //     }
+    // };
+
+
+    return ( 
     
         
     <View style={styles.container}>
         <Image source={require('../assets/music.jpeg')} style={styles.image}/>
         <Text style={styles.text}>Welcome !</Text>
-        <TouchableOpacity style={styles.buttonContainer} onPress={() => {}}>
-            <Text style={styles.buttontext}>Login With Google</Text>
+        <TouchableOpacity style={styles.buttonContainer} onPress={startSpotifyPKCEFlow}>
+            <Text style={styles.buttontext}>Login With spotify</Text>
         </TouchableOpacity>
     </View>
   )
