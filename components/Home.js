@@ -1,5 +1,5 @@
-import React from 'react'
-import { View } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { FlatList, Pressable, View } from 'react-native'
 import { Text } from 'react-native'
 import { StyleSheet } from 'react-native'
 import { StatusBar } from 'expo-status-bar'
@@ -11,20 +11,101 @@ import Navbar from './Navbar'
 import Minisong from './Minisong'
 import Popularplaylist from './Popularplaylist'
 import Popularplaylistrow from './Popularplaylistrow'
+import { useNavigation } from '@react-navigation/native'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 // import LinearGradient from 'react-native-linear-gradient'
 
 
 
 const Home = () => {
   const greeting = getGreeting();
-  // const gradient = ['rgba(0,0,0,0)', 'rgba(0,0,0,1)'];
+  const navigation = useNavigation();
+  const [userProfile, setUserProfile] = useState();
+  const [recentlyplayed, setRecentlyPlayed] = useState();
+
+  const getProfile = async () => {
+    const accessToken = await AsyncStorage.getItem("token");
+    try{
+      const response = await fetch("https://api.spotify.com/v1/me", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      const data = await response.json();
+      setUserProfile(data);
+      return data;
+    } catch (err){
+      console.log(err.message);
+    }
+  };
+
+  useEffect(() => {
+    getProfile();
+  }, []);
+
+  const getRecentlyPlayedSongs = async () => {
+    const accessToken = await AsyncStorage.getItem("token");
+    try{
+      const response = await axios({
+        method: "GET",
+        url: "https://api/spotify.com/v1/me/player/recently-played?limit=6",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      const tracks = response.data.items;
+      setRecentlyPlayed(tracks);
+    } catch {err} {
+      console.log(err.message);
+    }
+  };
+
+  useEffect(() => {
+    getRecentlyPlayedSongs();
+  }, []);
+  const renderItem = ({item}) =>{
+    return(
+      <Pressable 
+        style={{
+          flex:1,
+          flexDirection: "row",
+          justifyContent: 'space-between',
+          marginHorizontal: 10,
+          marginVertical: 8,
+          backgroundColor: 'rgba(105, 103, 102, 0.5)',
+          borderRadius: 4,
+          elevation: 3
+        }}
+      >
+        <Image  
+          style={{height: 55, width: 55}}
+          source={{ uri: item.track.album.images[0].url}}
+        />
+        <View
+          style={{flex: 1, marginHorizontal: 8, justifyContent: 'center'}}
+        >
+          <Text 
+            numberOfLines={2}
+            style={{fontSize: 13, fontWeight: 'bold', color: 'white'}}
+          >
+            {item.track.name}
+          </Text>
+        </View>
+      </Pressable>
+    );
+  }
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.greetingcontainer}>
         <Text style={styles.greeting}>{greeting}</Text>
       </View>
       <ScrollView>
-        <View style={styles.recentcontainer}>
+        <FlatList 
+          data={recentlyplayed}
+          renderItem={renderItem}
+          numColumns={2}
+          columnWrapperStyle={{justifyContent: "space-between"}}/>
+        {/* <View style={styles.recentcontainer}>
           <View style={styles.recentrow}>
             <Recents/>
             <View style={styles.gap}/>
@@ -40,24 +121,28 @@ const Home = () => {
             <View style={styles.gap}/>
             <Recents/>
           </View>
-        </View>
+        </View> */}
         {/* <LinearGradient colors={gradient} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}> */}
         <View style={styles.popular}>
           <Text style={styles.populartext} >Popular playlists</Text>
         </View>
-        <View>
+        {/* <View>
           <Popularplaylistrow/>
           <Popularplaylistrow/>
           <Popularplaylistrow/>
           <Popularplaylistrow/>
-        </View>
+        </View> */}
+        <FlatList data={recentlyplayed} showsVerticalScrollIndicator={false} renderItem={({item, index}) => (
+          <Popularplaylist item={item} key={index}/>
+        )}
+        />
       </ScrollView>
       <View style={styles.minisong}>
         <Minisong/>
       </View>
-      <View style={styles.navbar}>
+      {/* <View style={styles.navbar}>
         <Navbar />
-      </View>
+      </View> */}
     </SafeAreaView>
   )
 }

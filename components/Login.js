@@ -1,17 +1,57 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Text, Image, StyleSheet, View, Dimensions, TouchableOpacity} from 'react-native'
 import { Button } from 'react-native'
 import { Alert } from 'react-native'
-import { startSpotifyPKCEFlow } from './Auth'
-
+import * as AppAuth from "expo-app-auth"
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from '@react-navigation/native';
 const Login = () => {
-    // const handlePress = async () => {
-    //     try {
-    //       await startSpotifyPKCEFlow();
-    //     } catch (error) {
-    //       Alert.alert('Authentication Error', 'There was an issue with Spotify authentication.');
-    //     }
-    // };
+
+    const navigation = useNavigation();
+    useEffect(() => {
+        const checkTokenValidity = async () => {
+            const accessToken = await AsyncStorage.getItem("token");
+            const expirationDate = await AsyncStorage.getItem("expirationDate");
+            console.log("access token", accessToken);
+            console.log("expiration date", expirationDate);
+
+            if(accessToken && expirationDate){
+                const currentTime = Date.now();
+                if(currentTime < parseInt(expirationDate)){
+                    navigation.replace("Main");
+                }else{
+                    AsyncStorage.removeItem("token");
+                    AsyncStorage.removeItem("expirationDate");
+                }
+            }
+        }
+        checkTokenValidity();
+    },[])
+    async function authenticate(){
+        const config = {
+            issuer: "https://accounts.spotify.com",
+            clientId: "80ba12ab960340ab83d812829acc8cac",
+            scopes: [
+                "user-read-email",
+                "user-library-read",
+                "user-read-recently-played",
+                "user-top-read",
+                "playlist-read-private",
+                "playlist-read-collaborative",
+                "playlist-modify-public"
+            ],
+            redirectUrl: "exp://192.168.0.105:8081/--/spotify-auth-callback"
+            
+        }
+        const result = await AppAuth.authAsync(config);
+        console.log(result);
+        if(result.accessToken){
+            const expirationDate = new Date(result.accessTokenExpirationDate).getTime();
+            AsyncStorage.setItem("token", result.accessToken);
+            AsyncStorage.setItem("expirationDate", expirationDate.toString());
+            navigation.navigate("Main")
+        }
+    } 
 
 
     return ( 
@@ -20,7 +60,7 @@ const Login = () => {
     <View style={styles.container}>
         <Image source={require('../assets/music.jpeg')} style={styles.image}/>
         <Text style={styles.text}>Welcome !</Text>
-        <TouchableOpacity style={styles.buttonContainer} onPress={startSpotifyPKCEFlow}>
+        <TouchableOpacity style={styles.buttonContainer} onPress={authenticate}>
             <Text style={styles.buttontext}>Login With spotify</Text>
         </TouchableOpacity>
     </View>

@@ -1,19 +1,22 @@
 import React from 'react'
-import { Image, StyleSheet, Text, View } from 'react-native'
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native'
 
-const Song = () => {
+const Song = ({item}) => {
   return (
-    <View style={styles.songcontainer}>
-        <Image source={require('../assets/music3.jpeg')} style={styles.songphoto}/>
-        <View style={styles.songnamecontainer}>
-          <Text style={styles.songname}>Song name</Text>
-        </View>
-        <Image source={require('../assets/heartopen.png')} style={styles.heart}/>
-        <Image source={require('../assets/options_icon.png')} style={styles.option}/>
-    </View>
+    <Pressable>
+      <View style={styles.songcontainer}>
+          <Image source={{uri: item?.track?.album?.images[0].url}} style={styles.songphoto}/>
+          <View style={styles.songnamecontainer}>
+            <Text style={styles.songname}>{item?.track?.name}</Text>
+            <Text style={styles.artistname}>{item?.track?.artists[0].name}</Text>
+          </View>
+          <Image source={require('../assets/heartopen.png')} style={styles.heart}/>
+          <Image source={require('../assets/options_icon.png')} style={styles.option}/>
+      </View>
+    </Pressable>
   )
 }
-
+ 
 const styles=StyleSheet.create({
   songcontainer:{
     backgroundColor: '#292829',

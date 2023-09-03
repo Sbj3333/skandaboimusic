@@ -1,16 +1,18 @@
 import React from 'react'
-import { Image, Text, View } from 'react-native'
+import { Image, Pressable, Text, View } from 'react-native'
 import { StyleSheet } from 'react-native'
 
 
 const Minisong = () => {
   return (
-    <View style={styles.songcontainer}>
-      <Image source={require('../assets/music2.jpeg')} style={styles.songcover}/>
-      <Text style={styles.songname}>Song name</Text>
-      <Image source={require('../assets/heartopen.png')} style={styles.heart}/>
-      <Image source={require('../assets/pause.png')} style={styles.pause} />
-    </View>
+    <Pressable>
+      <View style={styles.songcontainer}>
+        <Image source={{uri: currentTrack?.track?.albums?.images[0].url}} style={styles.songcover}/>
+        <Text style={styles.songname}>Song name</Text>
+        <Image source={require('../assets/heartopen.png')} style={styles.heart}/>
+        <Image source={require('../assets/pause.png')} style={styles.pause} />
+      </View>
+    </Pressable>
   )
 }
 

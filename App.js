@@ -12,21 +12,18 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Profile from './components/Profile';
 import Library from './components/Library';
 import Miniplaylist from './components/Miniplaylist';
+import Navigation from './components/StackNavigator';
+import { PlayerContext } from './PlayerContext'
+import { ModalPortal} from 'react-native-modals'
 
 export default function App() {
-  const Stack = createStackNavigator();
   return (
-    // <NavigationContainer>
-    //   <Stack.Navigator initialRouteName="Home">
-    //     <Stack.Screen name="Home" component={Home}/>
-    //     <Stack.Screen name="Search" component={Search}/>
-    //     <Stack.Screen name="Library" component={Library}/>
-    //     <Stack.Screen name="Profile" component={Profile}/>
-    //     <Stack.Screen name="Songplayer" component={Songplayer}/>
-    //     <Stack.Screen name="Playlist" component={Playlist}/>
-    //   </Stack.Navigator>
-    // </NavigationContainer>
-    <Home/>
+    <>
+      <PlayerContext>
+        <Navigation/>
+        <ModalPortal/>
+      </PlayerContext>
+    </>
   );
 }
 
