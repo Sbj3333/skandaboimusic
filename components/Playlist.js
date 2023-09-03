@@ -16,7 +16,7 @@ const Playlist = () => {
   const navigation = useNavigation();
   const [backgroundColor, setBackgroundColor] = useState("#0A2647");
   const [modalVisible, setModalVisible] = useState(false);
-  const [searchedTracks, setSearchedTracks] = useState([]);
+  // const [searchedTracks, setSearchedTracks] = useState([]);
   const [input, setInput] = useState("");
   const value = useRef(0);
   const [currentSound, setCurrentSound] = useState(null);
@@ -30,7 +30,7 @@ const Playlist = () => {
   async function getSavedTracks(){
     const accessToken = await AsyncStorage.getItem("token");
     const response = await fetch(
-      "https://api.spotify.com/v1/me/tracks?offset=0&limit=500",
+      "https://api.spotify.com/v1/me/tracks?offset=0&limit=1000",
       {
         headers:{
           Authorization: `Bearer ${accessToken}`,
@@ -126,11 +126,11 @@ const Playlist = () => {
     }
   };
 
-  useEffect(() => {
-    if(savedTracks.length > 0){
-      handleSearch(input)
-    }
-  },[savedTracks])
+  // useEffect(() => {
+  //   if(savedTracks.length > 0){
+  //     handleSearch(input)
+  //   }
+  // },[savedTracks])
 
 
   const extractColors = async () => {
@@ -139,7 +139,7 @@ const Playlist = () => {
     setBackgroundColor(randomColor);
   };
 
-  const PlayNextTrack = async () =>{
+  const playNextTrack = async () =>{
     if (currentSound) {
       await currentSound.stopAsync();
       setCurrentSound(null);
@@ -173,20 +173,7 @@ const Playlist = () => {
     }
   };
 
-  const debouncedSearch = debounce(handleSearch, 800);
-  function handleSearch(text) {
-    const filteredTracks = savedTracks.filter((item) =>
-      item.track.name.toLowerCase().includes(text.toLowerCase())
-    );
-    setSearchedTracks(filteredTracks);
-  }
-  const handleInputChange = (text) => {
-    setInput(text);
-    debouncedSearch(text);
-  };
-
-
-
+  
   return (
     <SafeAreaView style={styles.container}>
         <View style={styles.header}>
@@ -194,7 +181,7 @@ const Playlist = () => {
             <Ionicons name='arrow-back' size={24} color="white"/>
           </Pressable>
           <Text style={styles.text}>Playlist Name</Text>
-          <Pressable onPress={}>
+          <Pressable onPress={playTrack}>
             <Image style={styles.playpause} source={require('../assets/pausesong.png')}/>
           </Pressable>
         </View>
@@ -242,15 +229,69 @@ const Playlist = () => {
                   <Image style={styles.liked} source={require('../assets/heartopen.png')}/>
                 </View>
                 <View style={styles.songprogress}>
-                  <Text>{formatTime(currentTime)}</Text>
-                  <Text>{formatTime(totalDuration)}</Text>
+                  <View style={[styles.progressbar, {width: `${progress * 100}%`}]}/>
+                  <View style={[
+                    {
+                      position: 'absolute', 
+                      top: -5,
+                      width: circleSize,
+                      height: circleSize,
+                      borderRadius: circleSize / 2,
+                      backgroundColor: 'white'
+                    },
+                    {
+                      left: `${progress * 100}%`, 
+                      marginLeft: -circleSize / 2,
+                    }
+                  ]}
+                  />
+                  <View 
+                    style={{
+                      marginTop: 12,
+                      flexDirection: 'row',
+                      alignItems: 'center', 
+                      justifyContent: 'space-between'
+                    }}>
+                    <Text>{formatTime(currentTime)}</Text>
+                    <Text>{formatTime(totalDuration)}</Text>
+                  </View>
                 </View>
                 <View style={styles.songcontrol}>
-                  <Image source={require('../assets/shuffle.png')} style={styles.shuffle}/>
-                  <Image source={require('../assets/previoussong.png')} style={styles.prevnext}/>
-                  <Image source={require('../assets/pausesong.png')} style={styles.playpause}/>
-                  <Image source={require('../assets/nextsong.png')} style={styles.prevnext}/>
-                  <Image source={require('../assets/repeat.png')} style={styles.repeat}/>
+                  <Pressable>
+                    <Image source={require('../assets/shuffle.png')} style={styles.shuffle}/>
+                  </Pressable>
+
+
+
+                  <Pressable onPress={playPreviousTrack}>
+                    <Image source={require('../assets/previoussong.png')} style={styles.prevnext}/>
+                  </Pressable>
+
+
+
+
+                  <Pressable onPress={handlePlayPause}> 
+                    {isPlaying ? (
+                      <Image source={require('../assets/pausesong.png')} style={styles.playpause}/>
+                    ) : (
+                      <Pressable onPress={handlePlayPause}>
+                        <Image source={require('../assets/playsong.png')} style={styles.playpause}/>
+                      </Pressable>
+                    )}
+                  </Pressable>
+
+
+
+                  <Pressable onPress={playNextTrack}>
+                    <Image source={require('../assets/nextsong.png')} style={styles.prevnext}/>
+                  </Pressable>
+
+
+
+
+                  <Pressable>
+                    <Image source={require('../assets/repeat.png')} style={styles.repeat}/>
+                  </Pressable>
                 </View>
               </SafeAreaView>
             </ModalContent>
@@ -471,6 +512,11 @@ const styles = StyleSheet.create({
     objectFit: 'contain',
     marginTop: '-15%'
 
+  },
+
+  progressbar:{
+    height: '100%',
+    backgroundColor: 'white'
   }
 
   

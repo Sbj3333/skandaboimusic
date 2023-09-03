@@ -3,7 +3,6 @@ import Search from "./Search";
 import Library from "./Library";
 import Profile from "./Profile";
 import Login from './Login';
-import Songplayer from './Songplayer';
 import Playlist from "./Playlist";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Image } from "react-native";
@@ -80,7 +79,6 @@ function Navigation(){
                 <Stack.Screen name="Login" component={Login}/>
                 <Stack.Screen name="Home" component={Home}/>
                 <Stack.Screen name="Main" component={BottomTabs}/>
-                <Stack.Screen name="Songplayer" component={Songplayer}/>
                 <Stack.Screen name="Playlist" component={Playlist}/>
             </Stack.Navigator>
         </NavigationContainer>
