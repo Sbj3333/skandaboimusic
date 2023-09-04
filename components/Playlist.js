@@ -8,7 +8,6 @@ import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import {Audio} from "expo-av";
 import { Player } from './PlayerContext'
-import Minisong from './Minisong'
 import {BottomModal} from 'react-native-modals'
 import {ModalContent} from 'react-native-modals'
 const Playlist = () => {

@@ -1,80 +1,64 @@
 import React, { useEffect } from 'react'
-import { Text, Image, StyleSheet, View, Dimensions, TouchableOpacity} from 'react-native'
-import { Button } from 'react-native'
-import { Alert } from 'react-native'
-import * as AppAuth from "expo-app-auth"
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Button } from 'react-native';
+import { Image } from 'react-native';
+import { View } from 'react-native';
+import { Text } from 'react-native';
+import { makeRedirectUri, ResponseType, useAuthRequest } from 'expo-auth-session';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { StyleSheet } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Linking } from 'react-native';
+
+
+
 const Login = () => {
 
-    const navigation = useNavigation();
-    useEffect(() => {
-        const checkTokenValidity = async () => {
-            const accessToken = await AsyncStorage.getItem("token");
-            const expirationDate = await AsyncStorage.getItem("expirationDate");
-            console.log("access token", accessToken);
-            console.log("expiration date", expirationDate);
+  const authEndpoint = "https://accounts.spotify.com/authorize";
+  const redirectUri = "localhost:19006"
+  const clientId = "80ba12ab960340ab83d812829acc8cac";
 
-            if(accessToken && expirationDate){
-                const currentTime = Date.now();
-                if(currentTime < parseInt(expirationDate)){
-                    navigation.replace("Main");
-                }else{
-                    AsyncStorage.removeItem("token");
-                    AsyncStorage.removeItem("expirationDate");
-                }
-            }
-        }
-        checkTokenValidity();
-    },[])
-    async function authenticate(){
-        const config = {
-            issuer: "https://accounts.spotify.com",
-            clientId: "80ba12ab960340ab83d812829acc8cac",
-            scopes: [
-                "user-read-email",
-                "user-library-read",
-                "user-read-recently-played",
-                "user-top-read",
-                "playlist-read-private",
-                "playlist-read-collaborative",
-                "playlist-modify-public"
-            ],
-            redirectUrl: "exp://192.168.0.105:8081/--/spotify-auth-callback"
-            
-        }
-        const result = await AppAuth.authAsync(config);
-        console.log(result);
-        if(result.accessToken){
-            const expirationDate = new Date(result.accessTokenExpirationDate).getTime();
-            AsyncStorage.setItem("token", result.accessToken);
-            AsyncStorage.setItem("expirationDate", expirationDate.toString());
-            navigation.navigate("Main")
-        }
-    } 
 
+  const scopes = [
+    "user-read-email",
+    "user-library-read",
+    "user-read-recently-played",
+    "user-top-read",
+    "playlist-read-private",
+    "playlist-read-collaborative",
+    "playlist-modify-public" // or "playlist-modify-private"
+  ];
+
+
+  const openurl = async () =>{
+    const loginUrl = `${authEndpoint}?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes.join("%20")}&response_type=token&show_dialog=true`
+    try{
+        await Linking.openURL(loginUrl);
+        console.log("login successful");
+
+    }catch(err) {
+        console.log(err)
+    }
+  }
 
     return ( 
-    
-        
-    <View style={styles.container}>
-        <Image source={require('../assets/music.jpeg')} style={styles.image}/>
-        <Text style={styles.text}>Welcome !</Text>
-        <TouchableOpacity style={styles.buttonContainer} onPress={authenticate}>
-            <Text style={styles.buttontext}>Login With spotify</Text>
-        </TouchableOpacity>
-    </View>
+      <View style={styles.container}>
+          <Image source={require('../assets/music.jpeg')} style={styles.image}/>
+          <Text style={styles.text}>Welcome !</Text>
+          <TouchableOpacity style={styles.buttonContainer} onPress={openurl} >
+              <Text style={styles.buttontext}>Login With spotify</Text>
+          </TouchableOpacity>
+      </View>
   )
 }
-const screenheight = Dimensions.get('window').height;
-const screenwidth = Dimensions.get('window').width;
+
+
 
 const styles = StyleSheet.create({
     container:{
         margin: 0,
         backgroundColor: '#040504',
-        height: screenheight,
-        width: screenwidth,
         overflow: 'hidden',
         flex: 1,
         flexDirection: 'column',
@@ -110,4 +94,23 @@ const styles = StyleSheet.create({
     
 })
 export default Login
-export {screenheight, screenwidth};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

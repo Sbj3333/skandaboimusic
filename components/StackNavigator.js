@@ -76,10 +76,10 @@ function Navigation(){
     return(
         <NavigationContainer>
             <Stack.Navigator>
-                <Stack.Screen name="Login" component={Login}/>
-                <Stack.Screen name="Home" component={Home}/>
-                <Stack.Screen name="Main" component={BottomTabs}/>
-                <Stack.Screen name="Playlist" component={Playlist}/>
+                <Stack.Screen name="Login" component={Login} options={{headerShown:false}}/>
+                <Stack.Screen name="Home" component={Home} options={{headerShown:false}}/>
+                <Stack.Screen name="Main" component={BottomTabs} options={{headerShown:false}}/>
+                <Stack.Screen name="Playlist" component={Playlist} options={{headerShown:false}}/>
             </Stack.Navigator>
         </NavigationContainer>
     )
