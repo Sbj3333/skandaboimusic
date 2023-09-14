@@ -30,6 +30,15 @@
     },
     "plugins": [
       "expo-router"
-    ]
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "2a68ca45-6daa-402a-90f5-9c03c66af6fb"
+      }
+    },
+    "owner": "skandaboi"
   }
 }

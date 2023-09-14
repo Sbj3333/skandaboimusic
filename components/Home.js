@@ -9,6 +9,7 @@ import Minisong from './Minisong'
 import Popularplaylist from './Popularplaylist'
 import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { Image } from 'react-native'
 // import LinearGradient from 'react-native-linear-gradient'
 
 
@@ -21,6 +22,7 @@ const Home = () => {
 
   const getProfile = async () => {
     const accessToken = await AsyncStorage.getItem("token");
+    console.log(accessToken)
     try{
       const response = await fetch("https://api.spotify.com/v1/me", {
         headers: {
@@ -28,10 +30,11 @@ const Home = () => {
         },
       });
       const data = await response.json();
+      // console.log(data);
       setUserProfile(data);
       return data;
-    } catch (err){
-      console.log(err.message);
+    } catch{
+      console.log("error");
     }
   };
 
@@ -41,18 +44,21 @@ const Home = () => {
 
   const getRecentlyPlayedSongs = async () => {
     const accessToken = await AsyncStorage.getItem("token");
+    // console.log("access token is working fine", accessToken);
     try{
-      const response = await axios({
-        method: "GET",
-        url: "https://api/spotify.com/v1/me/player/recently-played?limit=6",
+      const response = await fetch("https://api.spotify.com/v1/me/player/recently-played?limit=6",{
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
+        
       });
-      const tracks = response.data.items;
+      const data = await response.json();
+      const tracks = data.items;
+      // console.log(tracks);
       setRecentlyPlayed(tracks);
-    } catch {err} {
-      console.log(err.message);
+
+    } catch{
+      console.log("error from the unknown");
     }
   };
 
@@ -82,7 +88,7 @@ const Home = () => {
         >
           <Text 
             numberOfLines={2}
-            style={{fontSize: 13, fontWeight: 'bold', color: 'white'}}
+            style={{fontSize: 12, fontWeight: 'bold', color: 'white'}}
           >
             {item.track.name}
           </Text>
@@ -100,6 +106,7 @@ const Home = () => {
           data={recentlyplayed}
           renderItem={renderItem}
           numColumns={2}
+          style={styles.recents}
           columnWrapperStyle={{justifyContent: "space-between"}}/>
         {/* <View style={styles.recentcontainer}>
           <View style={styles.recentrow}>
@@ -128,13 +135,13 @@ const Home = () => {
           <Popularplaylistrow/>
           <Popularplaylistrow/>
         </View> */}
-        <FlatList data={recentlyplayed} showsVerticalScrollIndicator={false} renderItem={({item, index}) => (
+        <FlatList data={recentlyplayed} showsVerticalScrollIndicator={false} columnWrapperStyle={{justifyContent: "space-around"}} numColumns={2} renderItem={({item, index}) => (
           <Popularplaylist item={item} key={index}/>
         )}
         />
       </ScrollView>
       <View style={styles.minisong}>
-        <Minisong/>
+        {/* <Minisong/> */}
       </View>
       {/* <View style={styles.navbar}>
         <Navbar />
@@ -222,6 +229,10 @@ const styles = StyleSheet.create({
     bottom:'7%',
 
   },
+  recents:{
+    // backgroundColor:'red',
+    height: 250
+  }
   
   
   

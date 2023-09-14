@@ -62,6 +62,7 @@ const Library = () => {
     <SafeAreaView style={styles.container}>
       <View style={styles.head}>
         <Text style={styles.text}>My Library</Text>
+        
       </View>
       <View style={styles.gap}></View>
       <ScrollView contentContainerStyle={styles.scrollview}>
