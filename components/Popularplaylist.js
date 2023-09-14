@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useNavigation } from '@react-navigation/native'
 import React, { useEffect } from 'react'
-import { Image, Pressable, StyleSheet, View } from 'react-native'
+import { FlatList, Image, Pressable, StyleSheet, View } from 'react-native'
 import { Text } from 'react-native'
 import { useState } from 'react'
 
@@ -34,13 +34,26 @@ const Popularplaylist = ({item}) => {
     useEffect(() => {
         getFeaturedPlaylists();
     }, []);
+    const renderItem = ({item}) =>{
+        return(
+            <Pressable style={styles.playlistcontainer}>
+                <Image style={styles.playlistimage} source={{uri: item[0].images[0].url}}/>
+                <View>
+                    <Text numberOfLines={2} style={styles.playlistname}>{item.name}</Text>
+                </View>
+
+            </Pressable>
+        )
+    }
   return (
-    <View style={styles.playlistcontainer}>
-    <Pressable onPress={() => navigation.navigate('Playlist', {item: item})}>
-        
-        
-    </Pressable>
-</View>
+    <View>
+        <FlatList 
+            data={playlists}
+            renderItem={renderItem}
+            numColumns={2}
+            columnWrapperStyle={{justifyContent: 'space-between'}}/>
+
+    </View>
   )
 }
 

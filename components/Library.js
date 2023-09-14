@@ -1,5 +1,5 @@
 import React from 'react'
-import { ScrollView, Text, View } from 'react-native'
+import { FlatList, ScrollView, Text, View } from 'react-native'
 import Playlist from './Playlist'
 import Miniplaylist from './Miniplaylist'
 import { StyleSheet } from 'react-native'
@@ -11,8 +11,7 @@ import { useEffect } from 'react'
 
 
 const Library = () => {
-  const [userProfile, setUserProfile] = useState(null);
-  const [playlists, setPlaylists] = useState([]);
+  const [userplaylists, setUserPlaylists] = useState([]);
 
   useEffect(() => {
     const getPlaylists = async () => {
@@ -26,7 +25,7 @@ const Library = () => {
             },
           }
         );
-        setPlaylists(response.data.items);
+        setUserPlaylists(response.data.items);
       } catch (error) {
         console.error("Error retrieving playlists:", error);
       }
@@ -34,28 +33,20 @@ const Library = () => {
 
     getPlaylists();
   }, []);
-  useEffect(() => {
-    getProfile();
-  }, []);
-  const getProfile = async () => {
-    console.log("hi");
-    const accessToken = await AsyncStorage.getItem("token");
-    console.log("accesssssed token", accessToken);
-    try {
-      const response = await fetch("https://api.spotify.com/v1/me", {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      const data = await response.json();
-      setUserProfile(data);
-      return data;
-    } catch (error) {
-      console.log("error my friend", error.message);
-    }
-  };
-  console.log(playlists);
+  const renderItem = ({item}) =>{
+    return(
+        <Pressable style={styles.playlistcontainer}>
+            <Image style={styles.playlistimage} source={{uri: item[0].images[0].url}}/>
+            <View>
+                <Text numberOfLines={2} style={styles.playlistname}>{item.name}</Text>
+            </View>
 
+        </Pressable>
+    )
+}
+  
+  // console.log(playlists);
+  
 
   
   return (
@@ -66,6 +57,13 @@ const Library = () => {
       </View>
       <View style={styles.gap}></View>
       <ScrollView contentContainerStyle={styles.scrollview}>
+        {/* liked songs 
+        local files */}
+        <FlatList data={userplaylists} renderItem={renderItem} numColumns={1}/>
+
+
+
+        {/* <Miniplaylist/>
         <Miniplaylist/>
         <Miniplaylist/>
         <Miniplaylist/>
@@ -76,8 +74,7 @@ const Library = () => {
         <Miniplaylist/>
         <Miniplaylist/>
         <Miniplaylist/>
-        <Miniplaylist/>
-        <Miniplaylist/>
+        <Miniplaylist/> */}
       </ScrollView>
     </SafeAreaView>
   )
