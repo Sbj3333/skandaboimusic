@@ -8,6 +8,7 @@ import { useState } from 'react'
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { useEffect } from 'react'
+import { Pressable } from 'react-native'
 
 
 const Library = () => {
@@ -59,6 +60,12 @@ const Library = () => {
       <ScrollView contentContainerStyle={styles.scrollview}>
         {/* liked songs 
         local files */}
+        <Pressable>
+          <Miniplaylist name="Liked songs"/>
+        </Pressable>
+        <Pressable>
+          <Miniplaylist name="Local Files"/>
+        </Pressable>
         <FlatList data={userplaylists} renderItem={renderItem} numColumns={1}/>
 
 

@@ -2,11 +2,16 @@ import React from 'react'
 import { Image, StyleSheet, View } from 'react-native'
 import { Text } from 'react-native'
 
-const Miniplaylist = () => {
+const Miniplaylist = ({name}) => {
+
+    const imageMapping = {
+        'Liked songs': require('../assets/music2.jpeg'),
+        'Local files': require('../assets/music2.jpeg')
+    };
   return (
     <View style={styles.container}>
-        <Image source={require('../assets/music2.jpeg')} style={styles.playlistbanner}/>
-        <Text style={styles.text}>Playlist Name</Text>
+        <Image source={imageMapping[name]} style={styles.playlistbanner}/>
+        <Text style={styles.text}>{name}</Text>
     </View>
   )
 }
