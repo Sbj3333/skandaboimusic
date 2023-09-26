@@ -48,13 +48,15 @@ const Library = () => {
     getplaylist();
   }, []);
 
-  const renderItem = ({item}) =>{
+  const renderItem = ({item, index}) =>{
+    const isLastItem = index === (userplaylists.length - 1); 
     // console.log(item.name);
     // console.log(item.images[0].url);
+    
     return(
         <Pressable onPress={() => handleplaylist(item.href)}>
-          <View style={styles.playlistcontainer}>
-              {item.images[0]?.url ? ( // Check if the images array exists and has at least one element
+          <View style={[styles.playlistcontainer, isLastItem? {marginBottom: 150}: null]}>
+              {item.images[0]?.url ? ( 
                 
                 <Image
                   style={styles.playlistimage}
@@ -88,35 +90,10 @@ const Library = () => {
         
       </View>
       <View style={styles.gap}></View>
-      {/* <ScrollView> */}
-        {/* liked songs 
-        local files */}
-        {/* <Pressable onPress={handleliked}>
-          <Miniplaylist name="Liked songs"/>
-          <View style={styles.container}>
-            <Image source={imageMapping[name]} style={styles.playlistbanner}/>
-            <Text style={styles.text}>{name}</Text>
-          </View>
-        </Pressable> */}
-
-
-        {/* <Pressable onPress={handlelocal}>
-          <Miniplaylist name="Local Files"/>
-          <View style={styles.container}>
-            <Image source={imageMapping[name]} style={styles.playlistbanner}/>
-            <Text style={styles.text}>{name}</Text>
-          </View>
-        </Pressable> */}
-
-
-        <FlatList 
-          data={userplaylists} 
-          renderItem={renderItem} 
-          numColumns={1}/>
-        
-        <View style={styles.bottomgap}/>
-
-      {/* </ScrollView> */}
+      <FlatList 
+        data={userplaylists} 
+        renderItem={renderItem} 
+        numColumns={1}/>
     </SafeAreaView>
   )
 }
@@ -188,6 +165,10 @@ const styles = StyleSheet.create({
   gap: {
     height: 4
   },
+
+  bottomgap: {
+    height: 150
+  }
   
 })
 export default Library

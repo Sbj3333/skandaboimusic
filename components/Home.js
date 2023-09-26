@@ -72,6 +72,7 @@ const Home = () => {
     getRecentlyPlayedSongs();
   }, []);
   const renderItem = ({item}) =>{
+    
     return(
       <Pressable 
         style={{
@@ -203,8 +204,7 @@ const styles = StyleSheet.create({
 
   },
   gap: {
-    height: 50,
-    backgroundColor: 'green'
+    height: 150,
   },
 
   scrollview:{

@@ -17,6 +17,7 @@ import { SimpleLineIcons } from '@expo/vector-icons';
 const ActualPlaylist = () => {
   const navigation = useNavigation();
   const [actualplaylists, setActualPlaylists] = useState([]);
+  const [playlistname, setPlaylistName] = useState('');
   // const renderItem = ({})
   const route = useRoute();
   const href = route.params;
@@ -33,6 +34,7 @@ const ActualPlaylist = () => {
         });
         const data = await response.json();
         setActualPlaylists(data.tracks.items);
+        setPlaylistName(data.name);
         // console.log(data.name);
         // console.log(data.images[0].url);
         // console.log(JSON.stringify(data.tracks.items[0].track.album.artists.name[0]));
@@ -52,7 +54,9 @@ const ActualPlaylist = () => {
     getplaylist();
   }, []);
 
-  const renderItem = ({item}) =>{
+  const renderItem = ({item, index}) =>{
+    
+
     return(
       <Pressable>
         <View style={styles.songcontainer}>
@@ -79,9 +83,9 @@ const ActualPlaylist = () => {
     <SafeAreaView style={styles.container}>
         <View style={styles.header}>
           <Pressable onPress={() => navigation.goBack()}>
-            <Ionicons name='arrow-back' size={24} color="white"/>
+            <Ionicons name='arrow-back' size={30} color="white" style={styles.backbutton}/>
           </Pressable>
-          <Text style={styles.text}>Playlist name</Text>
+          <Text numberOfLines={1} style={styles.text}>{playlistname}</Text>
           <Pressable 
             // onPress={playTrack}
           >
@@ -100,6 +104,9 @@ const ActualPlaylist = () => {
 }
 
 const styles=StyleSheet.create({
+
+  
+
   songcontainer:{
     backgroundColor: 'black',
     height: 65,
@@ -119,7 +126,7 @@ const styles=StyleSheet.create({
     // backgroundColor: 'blue',
     width: '52%',
     justifyContent: 'center',
-    marginLeft: 8
+    marginLeft: 5
   },
 
   songname: {
@@ -139,16 +146,15 @@ const styles=StyleSheet.create({
     width: '10%',
     objectFit: 'contain',
     marginTop: 13,
-    marginLeft: 7
+    marginLeft: 10
     // backgroundColor: 'plum'
   },
 
   option: {
     height: '50%',
     width: '12%',
-    objectFit: 'contain',
     marginTop: 10,
-    marginLeft: 10,
+    marginLeft: 24,
     // backgroundColor: 'gray'
   },
   
@@ -164,25 +170,33 @@ const styles=StyleSheet.create({
     width: '100%',
     height:'12%',
     flexDirection: 'row',
-    justifyContent:'space-between',
+    justifyContent:'centre',
     alignItems: 'center'
   },
 
   text:{
     color:'white',
-    fontSize: 38,
-    fontWeight: 'bold'
+    width: '60%',
+    fontSize: 20,
+    fontWeight: 'bold',
+    // backgroundColor:'red',
+    marginLeft: -30
   },
 
   playpause:{
-    height:'60%',
-    width: '25%',
+    height:70,
+    width: 50,
     objectFit:'contain',
+    marginLeft:10,
     // backgroundColor:'blue'
   },
 
   scrollview:{
     gap: 2
+  },
+
+  backbutton:{
+    marginLeft: '20%'
   },
 })
 

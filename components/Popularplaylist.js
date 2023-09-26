@@ -44,11 +44,11 @@ const Popularplaylist = ({item}) => {
     useEffect(() => {
         getFeaturedPlaylists();
     }, []);
-    const renderItem = ({item}) =>{
-        
+    const renderItem = ({item, index}) =>{
+        const isLastItem = index ===(playlists.length - 1 );
         // console.log(index)
         return(
-            <Pressable style={styles.playlistcontainer} onPress={() => handleplaylist(item.href)}>
+            <Pressable style={[styles.playlistcontainer, isLastItem? {marginBottom: 100}: null]} onPress={() => handleplaylist(item.href)}>
                 {/* <View style={styles.imagecontainer}> */}
                 <Image style={styles.playlistimage} 
                 source={{uri: item.images[0].url}}

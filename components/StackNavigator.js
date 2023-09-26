@@ -75,20 +75,6 @@ function BottomTabs(){
 
                 }}
             />
-            <Tab.Screen 
-                name="Profile"
-                component={Profile}
-                options={{
-                    headerShown: false,
-                    tabBarIcon: ({focused}) =>
-                        focused ? (
-                            <Image source={require('../assets/profile_icon.png')} style={styles.bottomtabimages}/>
-                        ) : (
-                            <Image source={require('../assets/profile_icon.png')} style={styles.bottomtabimages}/>
-                        )
-
-                }}
-            />
         </Tab.Navigator>
     )
 }
@@ -105,7 +91,6 @@ function Navigation(){
                 {/* <Stack.Screen name="Home" component={Home} options={{headerShown:false}}/> */}
                 <Stack.Screen name="Search" component={Search} options={{headerShown: false}}/>
                 <Stack.Screen name="Library" component={Library} options={{headerShown:false}}/>
-                <Stack.Screen name="Profile" component={Profile} options={{headerShown: false}}/>
                 <Stack.Screen name="IndividualPlaylist" component={ActualPlaylist} options={{headerShown: false}}/>
             </Stack.Navigator>
         </NavigationContainer>
