@@ -29,8 +29,8 @@ const Profile = () => {
   }, []);
   const renderItem = ({item}) =>{
     return(
-        <Pressable style={}>
-            <Image style={} source={{uri: item[0].images[0].url}}/>
+        <Pressable>
+            <Image source={{uri: item[0].images[0].url}}/>
             <View>
                 <Text numberOfLines={2} style={styles.playlistname}>{item.name}</Text>
             </View>

@@ -37,7 +37,7 @@ const Login = () => {
         "user-top-read",
         "playlist-read-private",
         "playlist-read-collaborative",
-        "playlist-modify-public",
+        "playlist-modify-private",
         "streaming",
       ],
       usePKCE: false,
@@ -52,7 +52,7 @@ const Login = () => {
       const { access_token } = response.params;
       console.log(access_token);
       AsyncStorage.setItem("token", access_token);
-      navigation.navigate("Home");
+      navigation.navigate("Main");
 
     }
   }, [response]);

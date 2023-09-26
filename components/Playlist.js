@@ -26,6 +26,10 @@ const Playlist = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [savedTracks, setSavedTracks] = useState([]);
   const {currentTrack, setCurrentTrack} = useContext(Player);
+
+
+
+
   async function getSavedTracks(){
     const accessToken = await AsyncStorage.getItem("token");
     const response = await fetch(
@@ -36,7 +40,7 @@ const Playlist = () => {
 
         },
         params: {
-          limit: 500,
+          limit: 1000,
         },
       });
     
@@ -109,7 +113,7 @@ const Playlist = () => {
   const circleSize = 12;
   const formatTime = (time) => {
     const minutes = Math.floor(time / 60000);
-    const secons = Math.floor((time % 60000)/1000);
+    const seconds = Math.floor((time % 60000)/1000);
     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   };
 

@@ -10,6 +10,7 @@ import Popularplaylist from './Popularplaylist'
 import { useNavigation } from '@react-navigation/native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Image } from 'react-native'
+import { BottomModal } from 'react-native-modals'
 // import LinearGradient from 'react-native-linear-gradient'
 
 
@@ -19,10 +20,15 @@ const Home = () => {
   const navigation = useNavigation();
   const [userProfile, setUserProfile] = useState();
   const [recentlyplayed, setRecentlyPlayed] = useState();
+  const [isModalVisible, setModalVisible] = useState(null);
+
+  const toggleModal = () =>{
+    setModalVisible(!isModalVisible);
+  };
 
   const getProfile = async () => {
     const accessToken = await AsyncStorage.getItem("token");
-    console.log(accessToken)
+    // console.log(accessToken)
     try{
       const response = await fetch("https://api.spotify.com/v1/me", {
         headers: {
@@ -54,7 +60,7 @@ const Home = () => {
       });
       const data = await response.json();
       const tracks = data.items;
-      // console.log(tracks);
+      // console.log(data);
       setRecentlyPlayed(tracks);
 
     } catch{
@@ -74,13 +80,13 @@ const Home = () => {
           justifyContent: 'space-between',
           marginHorizontal: 10,
           marginVertical: 8,
-          backgroundColor: 'rgba(105, 103, 102, 0.5)',
-          borderRadius: 4,
-          elevation: 3
+          backgroundColor: 'rgba(105, 103, 102, 0.3)',
+          borderRadius: 10,
+          // elevation: 3
         }}
       >
         <Image  
-          style={{height: 55, width: 55}}
+          style={{height: 55, width: 55, borderRadius: 10}}
           source={{ uri: item.track.album.images[0].url}}
         />
         <View
@@ -135,17 +141,29 @@ const Home = () => {
           <Popularplaylistrow/>
           <Popularplaylistrow/>
         </View> */}
-        <FlatList data={recentlyplayed} showsVerticalScrollIndicator={false} columnWrapperStyle={{justifyContent: "space-around"}} numColumns={2} renderItem={({item, index}) => (
-          <Popularplaylist item={item} key={index}/>
-        )}
-        />
+        <Popularplaylist/>
+        <View styles={styles.gap}/>
       </ScrollView>
-      <View style={styles.minisong}>
-        {/* <Minisong/> */}
-      </View>
+      {/* <View style={styles.minisong}>
+        <Minisong/>
+      </View> */}
+      <BottomModal isVisible={isModalVisible}>
+        <Pressable>
+          <View style={styles.songcontainer}>
+            <Image //source={{uri: currentTrack?.track?.albums?.images[0].url}} 
+            style={styles.songcover}/>
+            <Text style={styles.songname}>Song name</Text>
+            <Image source={require('../assets/heartopen.png')} style={styles.heart}/>
+            <Image source={require('../assets/pause.png')} style={styles.pause} />
+          </View>
+        </Pressable>
+      </BottomModal>
       {/* <View style={styles.navbar}>
         <Navbar />
       </View> */}
+      
+
+      
     </SafeAreaView>
   )
 }
@@ -153,7 +171,7 @@ const Home = () => {
 
 const styles = StyleSheet.create({
   container:{
-    backgroundColor: '#1d1c1d',
+    backgroundColor: 'black',
     flex: 1,
     gap: 10
   },
@@ -163,7 +181,7 @@ const styles = StyleSheet.create({
     marginTop: '5%'
   },
   greeting:{
-    backgroundColor: '#1d1c1d',
+    backgroundColor: 'black',
     fontWeight: 'bold',
     color: 'white',
     fontSize: 35,
@@ -174,7 +192,7 @@ const styles = StyleSheet.create({
     // justifyContent: 'center',
     height: 250,
     // flex: 1,
-    backgroundColor: '#1d1c1d',
+    backgroundColor: 'black',
     alignItems: 'center',
     gap: -10
 
@@ -185,7 +203,8 @@ const styles = StyleSheet.create({
 
   },
   gap: {
-    width: '3%'
+    height: 50,
+    backgroundColor: 'green'
   },
 
   scrollview:{
@@ -207,7 +226,7 @@ const styles = StyleSheet.create({
   
   popular:{
     height: 65,
-    backgroundColor: '#1d1c1d',
+    backgroundColor: 'black',
     marginTop: -15
   },
    
@@ -223,7 +242,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     height: '6%',
     width: '100%',
-    backgroundColor: '#1d1c1d',
+    backgroundColor: 'black',
     justifyContent: 'center',
     alignItems:'center',
     bottom:'7%',
@@ -232,6 +251,52 @@ const styles = StyleSheet.create({
   recents:{
     // backgroundColor:'red',
     height: 250
+  },
+
+  songcontainer:{
+    // justifyContent: 'center',
+    flexDirection: 'row',
+    backgroundColor: '#388fd5',
+    // alignItems: 'center',
+    flex: 1,
+    width: '95%',
+    borderRadius: 10
+  },
+
+  songcover: {
+    height: '90%',
+    width: '13%',
+    top: 2.5,
+    objectFit: 'contain',
+    borderRadius: 10,
+    left: 2.5, 
+    // backgroundColor: 'blue'
+  },
+
+  songname: {
+    color:'white',
+    fontSize: 17,
+    marginTop: '2%',
+    left: '30%'
+  },
+
+  heart:{
+    height: '60%',
+    width: '10%',
+    objectFit: 'contain',
+    top: '2.5%',
+    marginLeft: '34%',
+    // backgroundColor: 'red'
+  },
+
+  pause:{
+    height: '65%',
+    width: '10%',
+    objectFit: 'contain',
+    top: '2%',
+    // backgroundColor: 'red',
+    marginLeft: '4.5%',
+
   }
   
   
