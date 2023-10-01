@@ -34,8 +34,8 @@ const Library = () => {
       // console.log(JSON.stringify(data.items[3].name, null, 2));
       // console.log(JSON.stringify(data.items[3].images[0].url, null, 2))
 
-      console.log(data.items);
-      console.log(JSON.stringify(data.items[1].owner.display_name, null, 2));
+      // console.log(data.items);
+      // console.log(JSON.stringify(data.items[1].owner.display_name, null, 2));
 
       setUserPlaylists(data.items);
       return data;

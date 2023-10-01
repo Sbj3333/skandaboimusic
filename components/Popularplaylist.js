@@ -51,7 +51,7 @@ const Popularplaylist = ({item}) => {
             <Pressable style={[styles.playlistcontainer, isLastItem? {marginBottom: 100}: null]} onPress={() => handleplaylist(item.href)}>
                 {/* <View style={styles.imagecontainer}> */}
                 <Image style={styles.playlistimage} 
-                source={{uri: item.images[0].url}}
+                    source={{uri: item.images[0].url}}
                 />
                 {/* </View> */}
                 {/* <View style={styles.textcontainer}>
