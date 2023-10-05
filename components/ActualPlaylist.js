@@ -57,7 +57,6 @@ const ActualPlaylist = () => {
         // console.log(JSON.stringify(data.tracks.items[0], null, 2));
         console.log(JSON.stringify(data.tracks.items[1], null, 2));
         // console.log(JSON.stringify(data.tracks.items[1].track.artists[0].name, null, 2)); //artist name
-        <Image style={styles.playpause} source={require('../assets/pausesong.png')}/>
         // console.log(JSON.stringify(data.tracks.items[1].track.album.images[0].url, null, 2)); //image
 
 
@@ -190,7 +189,7 @@ const ActualPlaylist = () => {
     
 
     return(
-      <Pressable onPress={handlefirstimeclicks}>
+      <Pressable onPress={() => {handlefirstimeclicks}}>
         <View style={styles.songcontainer}>
             {item.track.album.images[0]?.url ?(
               <Image source={{uri: item.track.album.images[0].url}} style={styles.songphoto}/>
@@ -220,7 +219,7 @@ const ActualPlaylist = () => {
           </Pressable>
           <Text numberOfLines={1} style={styles.text}>{playlistname}</Text>
           <Pressable 
-            onPress={playTrack}
+            onPress={() => {playTrack}}
           >
             {isPlaying ?(
               <Image style={styles.playpause} source={require('../assets/pausesong.png')}/>
@@ -270,7 +269,7 @@ const ActualPlaylist = () => {
             <ModalContent style = {{height: '100%', width: '100%', backgroundColor: '#1d1c1d'}}>
             <SafeAreaView>
                 <View style={styles.firstcontainer}>
-                  <Image source={require('../assets/backbutton.png')} style={styles.backbutton} onPress={setModalVisible(false)}/>
+                  <Image source={require('../assets/backbutton.png')} style={styles.backbutton} onPress={() => {setModalVisible(false)}}/>
                   <View style={styles.textcontainer}>
                     <Text style={styles.constant}>Playing songs from your library</Text>
                     <Text style={styles.library}>Liked songs</Text>
@@ -321,18 +320,18 @@ const ActualPlaylist = () => {
 
 
 
-                  <Pressable onPress={playPreviousTrack}>
+                  <Pressable onPress={() => {playPreviousTrack}}>
                     <Image source={require('../assets/previoussong.png')} style={styles.prevnext}/>
                   </Pressable>
 
 
 
 
-                  <Pressable onPress={handlePlayPause}> 
+                  <Pressable onPress={() => {handlePlayPause}}> 
                     {isPlaying ? (
                       <Image source={require('../assets/pausesong.png')} style={styles.secondplaypause}/>
                     ) : (
-                      <Pressable onPress={handlePlayPause}>
+                      <Pressable onPress={() => {handlePlayPause}}>
                         <Image source={require('../assets/playsong.png')} style={styles.secondplaypause}/>
                       </Pressable>
                     )}
@@ -340,7 +339,7 @@ const ActualPlaylist = () => {
 
 
 
-                  <Pressable onPress={playNextTrack}>
+                  <Pressable onPress={() => {playNextTrack}}>
                     <Image source={require('../assets/nextsong.png')} style={styles.prevnext}/>
                   </Pressable>
 
