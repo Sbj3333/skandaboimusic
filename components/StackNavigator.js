@@ -9,6 +9,7 @@ import { Image, StyleSheet } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import ActualPlaylist from "./ActualPlaylist";
+import Modaltrial from "./Modaltrial";
 
 const Tab = createBottomTabNavigator();
 
@@ -85,8 +86,9 @@ function Navigation(){
     return(
         <NavigationContainer>
             <Stack.Navigator>
-                <Stack.Screen name="Login" component={Login} options={{headerShown:false}}/>
 
+                <Stack.Screen name="Login" component={Login} options={{headerShown:false}}/>
+                {/* <Stack.Screen name="modal" component={Modaltrial} options={{headerShown: false}}/> */}
                 <Stack.Screen name="Main" component={BottomTabs} options={{headerShown:false}}/>
                 {/* <Stack.Screen name="Home" component={Home} options={{headerShown:false}}/> */}
                 <Stack.Screen name="Search" component={Search} options={{headerShown: false}}/>

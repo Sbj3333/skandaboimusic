@@ -18,6 +18,9 @@ import { Player } from './PlayerContext';
 import { BottomModal, ModalContent } from 'react-native-modals';
 import { useRef } from 'react';
 import { Audio } from 'expo-av';
+import { Entypo } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
+
 
 
 const ActualPlaylist = () => {
@@ -28,16 +31,18 @@ const ActualPlaylist = () => {
   const value = useRef(0);
   const [currentSound, setCurrentSound] = useState(null);
   const [songindex, setSongIndex] = useState(0);
-  const [firstclick, setFirstClick] = useState(false);
   const [totalDuration, setTotalDuration] = useState(0);
   const [progress, setProgress] = useState(null);
   const [currentTime, setCurrentTime] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [loopstatus, setLoopStatus] = useState(false);
+  const [shufflestatus, setShuffleStatus] = useState(false);
   const {currentTrack, setCurrentTrack} = useContext(Player)
+  const [CPmodalVisible, setCPModalVisible] = useState(false);
   // const renderItem = ({})
   const route = useRoute();
   const href = route.params;
-  console.log(href);
+  // console.log(href);
 
 
   const getplaylist = async () => {
@@ -55,7 +60,7 @@ const ActualPlaylist = () => {
         // console.log(data.images[0].url);
         // console.log(JSON.stringify(data.tracks.items[0].track.album.artists.name[0]));
         // console.log(JSON.stringify(data.tracks.items[0], null, 2));
-        console.log(JSON.stringify(data.tracks.items[1], null, 2));
+        // console.log(JSON.stringify(data.tracks.items[1], null, 2));
         // console.log(JSON.stringify(data.tracks.items[1].track.artists[0].name, null, 2)); //artist name
         // console.log(JSON.stringify(data.tracks.items[1].track.album.images[0].url, null, 2)); //image
 
@@ -78,21 +83,22 @@ const ActualPlaylist = () => {
     await play(actualplaylists[0]);
   }
 
-  const handlefirstimeclicks = async() =>{
-    setFirstClick(true);
-    if(firstclick){
-      playTrack();
-    }
-    else{
-      handlePlayPause();
-    }
-  }
+  // const handlefirstimeclicks = async() =>{
+  //   setFirstClick(true);
+  //   if(firstclick){
+  //     playTrack();
+  //   }
+  //   else{
+  //     handlePlayPause();
+  //   }
+  // }
 
 
   const play = async (nextTrack) =>{
     console.log(nextTrack);
-    const preview_url = nextTrack?.track?.preview_url;
-    console.log("preview_url", preview_url);
+    const songhref = nextTrack?.track?.href;
+    const preview_url = nextTrack?.track.preview_url;
+    console.log("href", songhref);
     try{
       if(currentSound){
         await currentSound.stopAsync();
@@ -108,7 +114,7 @@ const ActualPlaylist = () => {
         },
         {
           shouldPlay: true,
-          isLooping: false,
+          isLooping: loopstatus,
         },
         onPlaybackStatusUpdate
 
@@ -185,28 +191,114 @@ const ActualPlaylist = () => {
     }
   };
 
-  const renderItem = ({item, index}) =>{
+  const pressed = async() =>{
+    console.log("button is pressed");
+  }
+
+  const options = () =>{
+    setCPModalVisible(!CPmodalVisible);
+    // navigation.navigate("Library", state);
+  }
+
+  const handleadd = (state, songuri) =>{
+    navigation.navigate("Library", {state, songuri});
+  }
+
+  const handleremove = async(songuri) =>{
+    await remove(href, songuri);
+    console.log("removed from playlist")
+  }
+
+  const remove = async(href, songuri) =>{
+    const access_token = await AsyncStorage.getItem("token");
+    try{
+      const request = await fetch(`https://api.spotify.com/v1/playlists/${href}/tracks`, {
+        method: 'DELETE',
+        headers:{
+          Authorization: `Bearer ${access_token}`,
+        },
+        body:{
+          tracks:[
+            {
+              uri:songuri,
+            }
+          ]
+        }
+      })
+    }catch(err){
+      console.log(err.message);
+    }
+  }
+
+  const handleloop = async() =>{
+    setLoopStatus(!loopstatus);
+  }
+
+  const renderItem = ({item}) =>{
     
 
     return(
-      <Pressable onPress={() => {handlefirstimeclicks}}>
-        <View style={styles.songcontainer}>
-            {item.track.album.images[0]?.url ?(
-              <Image source={{uri: item.track.album.images[0].url}} style={styles.songphoto}/>
-            ):(
-              <Image source={require('../assets/music.jpeg')} style={styles.songphoto}/>
+      <View>
+        <Pressable onPress={play}>
+          <View style={styles.songcontainer}>
+              {item.track.album.images[0]?.url ?(
+                <Image source={{uri: item.track.album.images[0].url}} style={styles.songphoto}/>
+              ):(
+                <Image source={require('../assets/music.jpeg')} style={styles.songphoto}/>
 
-            )}
-            <View style={styles.songnamecontainer}>
-              <Text numberOfLines={1} style={styles.songname}>{item.track.name}</Text>
-              <Text numberOfLines={1} style={styles.artistname}>{item.track.artists[0].name}</Text>
+              )}
+              <View style={styles.songnamecontainer}>
+                <Text numberOfLines={1} style={styles.songname}>{item.track.name}</Text>
+                <Text numberOfLines={1} style={styles.artistname}>{item.track.artists[0].name}</Text>
+              </View>
+              {/* <Image source={require('../assets/heartopen.png')} style={styles.heart}/> */}
+              {/* <Image source={require('../assets/options_icon.png')} style={styles.option}/> */}
+              {/* <AntDesign name="hearto" size={22} color="white" style={styles.heart} /> */}
+              <AntDesign name="heart" size={22} color="red" style={styles.heart} />
+              
+              <SimpleLineIcons name="options-vertical" size={24} color="white" style={styles.option} onPress={options(true)}/>
+          </View>
+        </Pressable>
+
+
+        
+        <BottomModal
+        visible={CPmodalVisible}
+        swipeDirection={["up", "down"]}
+        swipeThreshold={200}>
+        <ModalContent style = {{height: '20%', width: '100%', backgroundColor: 'black'}}>
+          <Entypo name="minus" size={24} color="gray" />
+          <View style={styles.cpimagecontainer}>
+            <Image 
+              source={{uri: item.track.album.images[0].url}}
+              style={styles.cpimage}/>
+            <View style={styles.cptextcontainer}>
+                <Text numberOfLines={1} style={styles.songname}>{item.track.name}</Text>
+                <Text numberOfLines={1} style={styles.artistname}>{item.track.artists[0].name}</Text>
             </View>
-            {/* <Image source={require('../assets/heartopen.png')} style={styles.heart}/> */}
-            {/* <Image source={require('../assets/options_icon.png')} style={styles.option}/> */}
-            <AntDesign name="hearto" size={22} color="white" style={styles.heart} />
-            <SimpleLineIcons name="options-vertical" size={24} color="white" style={styles.option} />
-        </View>
-      </Pressable>
+          </View>
+
+          <View style={styles.optioncontainer}>
+            <View style={styles.addtoplaylist}>
+              <Pressable onPress={handleadd(true, songuri)}>
+                <AntDesign name="plus" size={24} color="white" />
+                <Text style={styles.addname}>Add to Playlist</Text>
+              </Pressable>
+            </View>
+
+            <View style={styles.removeplaylist}>
+              <Pressable onPress={handleremove(songuri)}>
+                <Entypo name="minus" size={24} color="gray" />
+                <Text style={styles.removename}>Remove from this playlist</Text>
+              </Pressable>
+            </View>
+          </View>
+        </ModalContent>
+        </BottomModal>
+      
+      </View>
+
+
     )
   }
   
@@ -219,7 +311,7 @@ const ActualPlaylist = () => {
           </Pressable>
           <Text numberOfLines={1} style={styles.text}>{playlistname}</Text>
           <Pressable 
-            onPress={() => {playTrack}}
+            onPress={playTrack}
           >
             {isPlaying ?(
               <Image style={styles.playpause} source={require('../assets/pausesong.png')}/>
@@ -263,93 +355,124 @@ const ActualPlaylist = () => {
 
         <BottomModal
           visible={modalVisible}
-          onHardwareBackPress={() => setModalVisible(false)}
+        //   onHardwareBackPress={() => setModalVisible(false)}
           swipeDirection={["up", "down"]}
           swipeThreshold={200}>
-            <ModalContent style = {{height: '100%', width: '100%', backgroundColor: '#1d1c1d'}}>
+            <ModalContent style = {{height: '100%', width: '100%', backgroundColor: 'black'}}>
             <SafeAreaView>
                 <View style={styles.firstcontainer}>
-                  <Image source={require('../assets/backbutton.png')} style={styles.backbutton} onPress={() => {setModalVisible(false)}}/>
+                  <Pressable onPress={() => {setModalVisible(false)}}>
+                    <AntDesign name="caretdown" size={24} color="white" style={{marginRight:5, marginBottom:5}}/>
+                  </Pressable>
+
                   <View style={styles.textcontainer}>
                     <Text style={styles.constant}>Playing songs from your library</Text>
                     <Text style={styles.library}>Liked songs</Text>
                   </View>
-                  <Image style={styles.options} source={require('../assets/options_icon.png')}/>
+
+                  <Entypo name="dots-three-vertical" size={24} color="white" style={{marginLeft:5}}/>
                 </View>
+
+
                 <View style={styles.bannercontainer}>
-                  <Image source={{uri: currentTrack?.track?.album?.images[0].url}} style={styles.banner}/>
+                  <Image 
+                    source={{uri: currentTrack?.track?.album?.images[0].url}} 
+                    // source={require('../assets/music.jpeg')}
+                    style={styles.banner}/>
                 </View>
+
+
                 <View style={styles.songnameandliked}>
                   <View style={styles.modalsongnamecontainer}>
-                    <Text style={styles.modalsongname}></Text>
+                    <Text style={styles.modalsongname}>KGF</Text>
+                    <Text style={styles.artist}>Ravi Basrur</Text>
                   </View>
-                  <Image style={styles.liked} source={require('../assets/heartopen.png')}/>
+                  <AntDesign name="hearto" size={22} color="white" style={styles.heart} />
+                  {/* <AntDesign name="heart" size={22} color="red" style={styles.heart} /> */}
+
                 </View>
+
+
                 <View style={styles.songprogress}>
-                  <View style={[styles.progressbar, {width: `${progress * 100}%`}]}/>
+                  <View style={[styles.progressbar, {width: `${progress*100}%`}]}/>
                   <View style={[
                     {
                       position: 'absolute', 
-                      top: -5,
+                      top: 3,
                       width: circleSize,
                       height: circleSize,
                       borderRadius: circleSize / 2,
                       backgroundColor: 'white'
                     },
                     {
-                      left: `${progress * 100}%`, 
+                      left: `${progress*100}%`, 
                       marginLeft: -circleSize / 2,
                     }
                   ]}
                   />
+
                   <View 
-                    style={{
-                      marginTop: 12,
-                      flexDirection: 'row',
-                      alignItems: 'center', 
-                      justifyContent: 'space-between'
-                    }}>
-                    <Text>{formatTime(currentTime)}</Text>
-                    <Text>{formatTime(totalDuration)}</Text>
+                    style={styles.progresscontainer}>
+                    <Text style={{color:'white'}}>{formatTime(currentTime)}</Text>
+                    <Text style={{color:'white'}}>{formatTime(totalDuration)}</Text>
                   </View>
                 </View>
-                <View style={styles.songcontrol}>
-                  <Pressable>
-                    <Image source={require('../assets/shuffle.png')} style={styles.shuffle}/>
-                  </Pressable>
 
-
-
-                  <Pressable onPress={() => {playPreviousTrack}}>
-                    <Image source={require('../assets/previoussong.png')} style={styles.prevnext}/>
-                  </Pressable>
-
-
-
-
-                  <Pressable onPress={() => {handlePlayPause}}> 
-                    {isPlaying ? (
-                      <Image source={require('../assets/pausesong.png')} style={styles.secondplaypause}/>
-                    ) : (
-                      <Pressable onPress={() => {handlePlayPause}}>
-                        <Image source={require('../assets/playsong.png')} style={styles.secondplaypause}/>
-                      </Pressable>
+                <View style={styles.songcontrols}>
+                  <Pressable 
+                    onPress={handleshuffle}
+                  >
+                    {shufflestatus? (
+                      <Entypo name="shuffle" size={24} color="white" />
+                    ):(
+                      <Entypo name="shuffle" size={24} color="#154b9d" />
                     )}
                   </Pressable>
 
 
-
-                  <Pressable onPress={() => {playNextTrack}}>
-                    <Image source={require('../assets/nextsong.png')} style={styles.prevnext}/>
+                  <Pressable onPress={playPreviousTrack}>
+                    <AntDesign name="stepbackward" size={24} color="white" />
                   </Pressable>
 
 
+                  <Pressable onPress={() => {handlePlayPause}}> 
+                    {isPlaying ? (
+                      // <Image source={require('../assets/pausesong.png')} style={styles.secondplaypause}/>
+                      <AntDesign name="pausecircle" size={36} color="white" />
+
+                    ) : (
+                      <Pressable onPress={() => {handlePlayPause}}>
+                        {/* <Image source={require('../assets/playsong.png')} style={styles.secondplaypause}/> */}
+                        <AntDesign name="play" size={36} color="white" />
+
+                      </Pressable>
+                    )}
+                  </Pressable>
+
+                  {/* <Pressable>
+                    <AntDesign name="pausecircle" size={36} color="white" />
+                    <AntDesign name="play" size={36} color="white" />
+                  </Pressable> */}
 
 
-                  <Pressable>
-                    <Image source={require('../assets/repeat.png')} style={styles.repeat}/>
+                  <Pressable onPress={playNextTrack}>
+                    <AntDesign name="stepforward" size={24} color="white" />
+                  </Pressable>
+
+
+                  <Pressable 
+                    onPress={handleloop}
+                  >
+                    {loopstatus ?(
+                      <MaterialIcons name="repeat" size={28} color="white" />
+
+                    ):(
+                      <MaterialIcons name="repeat-one" size={28} color="#154b9d" />
+                    )}
+
                   </Pressable>
                 </View>
+                
               </SafeAreaView>
             </ModalContent>
         </BottomModal>
@@ -360,7 +483,6 @@ const ActualPlaylist = () => {
 
 const styles=StyleSheet.create({
 
-  
 
   songcontainer:{
     backgroundColor: 'black',
@@ -409,7 +531,7 @@ const styles=StyleSheet.create({
     height: '50%',
     width: '12%',
     marginTop: 10,
-    marginLeft: 24,
+    marginLeft: 20,
     // backgroundColor: 'gray'
   },
   
@@ -520,11 +642,10 @@ const styles=StyleSheet.create({
     marginLeft: '5.5%',
 
   },
-
-
+  
   firstcontainer:{
     flexDirection: 'row',
-    backgroundColor:'#1d1c1d',
+    backgroundColor:'black',
     height:'10%',
     justifyContent: 'center',
     width: '100%',
@@ -532,11 +653,6 @@ const styles=StyleSheet.create({
     gap: 30
   },
 
-  backbutton:{
-    height:'55%', 
-    width: '10%',
-    objectFit:'contain',
-  },
 
   textcontainer: {
     height: '60%',
@@ -545,11 +661,6 @@ const styles=StyleSheet.create({
     alignItems: 'center'
   },
 
-  options:{
-    height: '50%',
-    width: '10%',
-    objectFit: 'contain'
-  },
 
   constant:{
     color: 'white',
@@ -563,26 +674,29 @@ const styles=StyleSheet.create({
   },
 
   bannercontainer:{
-    height: '60%',
-    backgroundColor: '#1d1c1d',
+    height: '57%',
+    backgroundColor: 'black',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    // marginTop: '2%'
   },
 
   banner: {
-    height: '70%',
+    height: '75%',
     width: '90%',
     objectFit: 'contain',
-    // borderRadius: 20
+    borderRadius: 20
   },
 
   songnameandliked:{
-    backgroundColor: '#1d1c1d',
+    backgroundColor: 'black',
     height: '9%',
-    width: '100%',
+    width: '87%',
     flexDirection: 'row',
-    justifyContent: 'space-around', 
+    justifyContent: 'space-between', 
     alignItems: 'center', 
+    marginLeft: '6%'
+    // gap: 15
   },
 
   modalsongnamecontainer:{
@@ -594,9 +708,13 @@ const styles=StyleSheet.create({
   modalsongname:{
     color: 'white',
     fontSize: 30,
-    marginTop: '-2%',
+    marginTop: '-3%',
+    // backgroundColor: 'blue'
     // paddingLeft: 30
+  },
 
+  artist:{
+    color:'white',
 
   },
 
@@ -609,56 +727,279 @@ const styles=StyleSheet.create({
 
   songprogress: {
     height: '5%',
-    backgroundColor: '#1d1c1d',
-    flexDirection: 'row',
-    justifyContent: 'space-between'
-  },
-
-  songcontrol: {
-    height: '18%',
-    backgroundColor: '#1d1c1d',
-    flexDirection: 'row',
-    gap: 12,
+    width: '87%',
+    backgroundColor: 'black',
+    flexDirection: 'column',
     justifyContent: 'center',
-    alignItems: 'center'
-
-  },
-
-  shuffle:{
-    height: '25%',
-    width: '10%',
-    objectFit: 'contain',
-    marginTop: '-15%'
-  },
-
-  prevnext:{
-    height: '30%',
-    width: '15%',
-    objectFit: 'contain',
-    marginTop: '-15%'
-
-  },
-
-  secondplaypause: {
-    height: '45%',
-    width: '20%',
-    objectFit: 'contain',
-    marginTop: '-15%'
-
-  },
-
-  repeat: {
-    height: '25%',
-    width: '10%',
-    objectFit: 'contain',
-    marginTop: '-15%'
-
+    marginLeft: '6%',
+    marginTop: '5%'
   },
 
   progressbar:{
-    height: '20%',
-    backgroundColor: 'white'
+    height: '10%',
+    backgroundColor: 'white',
+    marginTop: 5
+  },
+
+  progresscontainer:{
+    marginTop: 5,
+    flexDirection: 'row',
+    alignItems: 'center', 
+    justifyContent: 'space-between',
+    color:'white',
+  },
+
+  songcontrols:{
+    height: '10%',
+    width: '87%',
+    // backgroundColor: 'blue',
+    marginLeft: '6%',
+    marginTop: '8%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems:'center'
   }
+
+
+
 })
 
 export default ActualPlaylist
+
+
+
+
+
+
+
+// firstcontainer:{
+//   flexDirection: 'row',
+//   backgroundColor:'black',
+//   height:'10%',
+//   justifyContent: 'center',
+//   width: '100%',
+//   alignItems: 'center',
+//   gap: 30
+// },
+
+// backbutton:{
+//   height:'55%', 
+//   width: '10%',
+//   objectFit:'contain',
+// },
+
+// textcontainer: {
+//   height: '60%',
+//   gap: 5,
+//   marginTop: 10,
+//   alignItems: 'center'
+// },
+
+// options:{
+//   height: '50%',
+//   width: '10%',
+//   objectFit: 'contain'
+// },
+
+// constant:{
+//   color: 'white',
+//   fontSize: 15,
+//   fontWeight: 'bold'
+// },
+
+// library:{
+//   color: 'white',
+//   fontSize: 10
+// },
+
+// bannercontainer:{
+//   height: '60%',
+//   backgroundColor: 'black',
+//   justifyContent: 'center',
+//   alignItems: 'center'
+// },
+
+// banner: {
+//   height: '70%',
+//   width: '90%',
+//   objectFit: 'contain',
+//   // borderRadius: 20
+// },
+
+// songnameandliked:{
+//   backgroundColor: 'black',
+//   height: '9%',
+//   width: '100%',
+//   flexDirection: 'row',
+//   justifyContent: 'space-around', 
+//   alignItems: 'center', 
+// },
+
+// modalsongnamecontainer:{
+//   // backgroundColor: 'red',
+//   width: '50%',
+
+// },
+
+// modalsongname:{
+//   color: 'white',
+//   fontSize: 30,
+//   marginTop: '-2%',
+//   // paddingLeft: 30
+
+
+// },
+
+// liked:{
+//   height: '50%',
+//   width: '10%',
+//   objectFit: 'contain',
+//   // backgroundColor: 'red',
+// },
+
+// songprogress: {
+//   height: '5%',
+//   backgroundColor: 'black',
+//   flexDirection: 'row',
+//   justifyContent: 'space-between'
+// },
+
+// songcontrol: {
+//   height: '18%',
+//   backgroundColor: 'black',
+//   flexDirection: 'row',
+//   gap: 12,
+//   justifyContent: 'center',
+//   alignItems: 'center'
+
+// },
+
+// shuffle:{
+//   height: '25%',
+//   width: '10%',
+//   objectFit: 'contain',
+//   marginTop: '-15%'
+// },
+
+// prevnext:{
+//   height: '30%',
+//   width: '15%',
+//   objectFit: 'contain',
+//   marginTop: '-15%'
+
+// },
+
+// secondplaypause: {
+//   height: '45%',
+//   width: '20%',
+//   objectFit: 'contain',
+//   marginTop: '-15%'
+
+// },
+
+// repeat: {
+//   height: '25%',
+//   width: '10%',
+//   objectFit: 'contain',
+//   marginTop: '-15%'
+
+// },
+
+// progressbar:{
+//   height: '20%',
+//   backgroundColor: 'white'
+// }
+
+
+{/* <BottomModal
+          visible={modalVisible}
+          onHardwareBackPress={() => setModalVisible(false)}
+          swipeDirection={["up", "down"]}
+          swipeThreshold={200}>
+            <ModalContent style = {{height: '100%', width: '100%', backgroundColor: 'black'}}>
+            <SafeAreaView>
+                <View style={styles.firstcontainer}>
+                  <Image source={require('../assets/backbutton.png')} style={styles.backbutton} onPress={() => {setModalVisible(false)}}/>
+                  <View style={styles.textcontainer}>
+                    <Text style={styles.constant}>Playing songs from your library</Text>
+                    <Text style={styles.library}>Liked songs</Text>
+                  </View>
+                  <Image style={styles.options} source={require('../assets/options_icon.png')}/>
+                </View>
+                <View style={styles.bannercontainer}>
+                  <Image source={{uri: currentTrack?.track?.album?.images[0].url}} style={styles.banner}/>
+                </View>
+                <View style={styles.songnameandliked}>
+                  <View style={styles.modalsongnamecontainer}>
+                    <Text style={styles.modalsongname}></Text>
+                  </View>
+                  <Image style={styles.liked} source={require('../assets/heartopen.png')}/>
+                </View>
+                <View style={styles.songprogress}>
+                  <View style={[styles.progressbar, {width: `${progress * 100}%`}]}/>
+                  <View style={[
+                    {
+                      position: 'absolute', 
+                      top: -5,
+                      width: circleSize,
+                      height: circleSize,
+                      borderRadius: circleSize / 2,
+                      backgroundColor: 'white'
+                    },
+                    {
+                      left: `${progress * 100}%`, 
+                      marginLeft: -circleSize / 2,
+                    }
+                  ]}
+                  />
+                  <View 
+                    style={{
+                      marginTop: 12,
+                      flexDirection: 'row',
+                      alignItems: 'center', 
+                      justifyContent: 'space-between'
+                    }}>
+                    <Text style={styles.starttime}>{formatTime(currentTime)}</Text>
+                    <Text style={styles.endtime}>{formatTime(totalDuration)}</Text>
+                  </View>
+                </View>
+                <View style={styles.songcontrol}>
+                  <Pressable>
+                    <Image source={require('../assets/shuffle.png')} style={styles.shuffle}/>
+                  </Pressable>
+
+
+
+                  <Pressable onPress={() => {playPreviousTrack}}>
+                    <Image source={require('../assets/previoussong.png')} style={styles.prevnext}/>
+                  </Pressable>
+
+
+
+
+                  <Pressable onPress={() => {handlePlayPause}}> 
+                    {isPlaying ? (
+                      <Image source={require('../assets/pausesong.png')} style={styles.secondplaypause}/>
+                    ) : (
+                      <Pressable onPress={() => {handlePlayPause}}>
+                        <Image source={require('../assets/playsong.png')} style={styles.secondplaypause}/>
+                      </Pressable>
+                    )}
+                  </Pressable>
+
+
+
+                  <Pressable onPress={() => {playNextTrack}}>
+                    <Image source={require('../assets/nextsong.png')} style={styles.prevnext}/>
+                  </Pressable>
+
+
+
+
+                  <Pressable>
+                    <Image source={require('../assets/repeat.png')} style={styles.repeat}/>
+                  </Pressable>
+                </View>
+              </SafeAreaView>
+            </ModalContent>
+        </BottomModal> */}
