@@ -39,6 +39,7 @@ const ActualPlaylist = () => {
   const [shufflestatus, setShuffleStatus] = useState(false);
   const {currentTrack, setCurrentTrack} = useContext(Player)
   const [CPmodalVisible, setCPModalVisible] = useState(false);
+  const [state, setState] = useState(false);
   // const renderItem = ({})
   const route = useRoute();
   const href = route.params;
@@ -139,7 +140,7 @@ const ActualPlaylist = () => {
     }
     if(status.didJustFinish === true){
       setCurrentSound(null);
-      playNextTrack();
+      playNextTrack(shufflestatus);
     }
   };
 
@@ -161,19 +162,37 @@ const ActualPlaylist = () => {
     }
   };
 
-  const playNextTrack = async () => {
+
+  function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+
+
+  
+
+  const playNextTrack = async (shufflestatus) => {
     if (currentSound){
       await currentSound.stopAsync();
       setCurrentSound(null);
     }
-    value.current += 1;
-    if (value.current < actualplaylists.length){
-      const nextTrack = actualplaylists[value.current];
-      setCurrentTrack(nextTrack);
-      await play(nextTrack);
-    }else{
-      console.log("end of playlist")
+    if(shufflestatus){
+      const SnextTrack = actualplaylists[getRandomInt(0, actualplaylists.length)];
+      setCurrentTrack(SnextTrack);
+      await play(SnextTrack);
     }
+    else{
+       value.current += 1;
+      if (value.current < actualplaylists.length){
+        const nextTrack = actualplaylists[value.current];
+        console.log(nextTrack);
+        setCurrentTrack(nextTrack);
+        await play(nextTrack);
+      }else{
+        console.log("end of playlist")
+      }
+    }
+   
   };
 
   const playPreviousTrack = async () => {
@@ -200,7 +219,8 @@ const ActualPlaylist = () => {
     // navigation.navigate("Library", state);
   }
 
-  const handleadd = (state, songuri) =>{
+  const handleadd = (songuri) =>{
+    setState(true);
     navigation.navigate("Library", {state, songuri});
   }
 
@@ -256,7 +276,7 @@ const ActualPlaylist = () => {
               {/* <AntDesign name="hearto" size={22} color="white" style={styles.heart} /> */}
               <AntDesign name="heart" size={22} color="red" style={styles.heart} />
               
-              <SimpleLineIcons name="options-vertical" size={24} color="white" style={styles.option} onPress={options(true)}/>
+              <SimpleLineIcons name="options-vertical" size={24} color="white" style={styles.option} onPress={options}/>
           </View>
         </Pressable>
 
@@ -280,7 +300,7 @@ const ActualPlaylist = () => {
 
           <View style={styles.optioncontainer}>
             <View style={styles.addtoplaylist}>
-              <Pressable onPress={handleadd(true, songuri)}>
+              <Pressable onPress={handleadd(songuri)}>
                 <AntDesign name="plus" size={24} color="white" />
                 <Text style={styles.addname}>Add to Playlist</Text>
               </Pressable>
@@ -420,7 +440,7 @@ const ActualPlaylist = () => {
 
                 <View style={styles.songcontrols}>
                   <Pressable 
-                    onPress={handleshuffle}
+                    onPress={() =>{setShuffleStatus(true)}}
                   >
                     {shufflestatus? (
                       <Entypo name="shuffle" size={24} color="white" />
@@ -765,6 +785,14 @@ const styles=StyleSheet.create({
 })
 
 export default ActualPlaylist
+// export { playTrack };
+// export {play} 
+// export {onPlaybackStatusUpdate}
+// export {handlePlayPause}
+// export {playNextTrack}
+// export {playPreviousTrack}
+// export {handleloop}
+// export {options} 
 
 
 

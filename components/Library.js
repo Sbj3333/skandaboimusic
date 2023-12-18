@@ -16,6 +16,7 @@ import Modal from 'react-native-modals'
 import { Button } from 'react-native'
 import { TextInput } from 'react-native'
 import { useRoute } from '@react-navigation/native'
+import { BottomModal } from 'react-native-modals'
 
 
 const Library = () => {
@@ -25,8 +26,9 @@ const Library = () => {
   const [newplaylistname, setNewPlaylistName] = useState('');
   const [spotifyid, setSpotifyid] = useState('');
   const route = useRoute();
-  const state = route.params.state;
-  const songuri = route.params.songuri;
+  // const state = route.params.state;
+  const songuri = route.params;
+  // console.log(state);
 
 
   const addsongs = async(playlistid) =>{
@@ -90,8 +92,7 @@ const Library = () => {
   
   const handleCreatePlaylist = async() =>{
     try{
-      CreatePlaylist();
-      setModalState(false);
+      setModalState(true);
     } catch(err){
       console.log(err.message);
     }
@@ -125,16 +126,22 @@ const Library = () => {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
           
         },
-        body: {
+        body: JSON.stringify({
           name: `${newplaylistname}`,
           description: 'new playlist',
-          public: 'false'
-        }
+          public: false, 
+      }),
+
 
     });
+    await getplaylist();
+    const data = await response.json();
+    console.log(data); 
 
+    console.log("shit");
     Alert.alert('Message', `New playlist ${newplaylistname} Created`, [
       {
         text: 'OK',
@@ -143,6 +150,9 @@ const Library = () => {
       },
       
     ]);
+
+    console.log("shit worked");
+    setModalState(false);
     }catch(err){
       console.log(err.message);
     }
@@ -155,7 +165,7 @@ const Library = () => {
     // console.log(item.images[0].url);
     
     return(
-        <Pressable onPress={() => handleplaylist(item.href, state, songuri)}>
+        <Pressable onPress={() => handleplaylist(item.href, true, songuri)}>
           <View style={[styles.playlistcontainer, isLastItem? {marginBottom: 150}: null]}>
               {item.images[0]?.url ? ( 
                 
@@ -188,8 +198,8 @@ const Library = () => {
     <SafeAreaView style={styles.container}>
       <View style={styles.head}>
         <Text style={styles.text}>My Library</Text>
-        <Pressable>
-          <AntDesign name="plus" size={24} color="white" />
+        <Pressable onPress={handleCreatePlaylist}>
+          <AntDesign name="plus" size={34} style={styles.plus} color="white" />
         </Pressable>
         
       </View>
@@ -200,19 +210,39 @@ const Library = () => {
         numColumns={1}/>
 
 
-      <Modal
+      {/* <BottomModal
         visible={modalstate}
         onHardwareBackPress={() => setModalState(false)}
-        animationType="slide">
+        animationType="slide"
+        style={styles.modal}>
         <View style={styles.modalContent}>
-          <Text>Enter the name of the new playlist</Text>
+          <Text style={styles.modaltext}>Enter the name of the new playlist</Text>
           <TextInput
-            style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
+            style={styles.modaltextinput}
             value={newplaylistname}
             onChangeText={(text) => {setNewPlaylistName(text)}}
           />
-            <Button title="Create" onPress={handleCreatePlaylist} />
-            <Button title="Cancel" onPress={()=> setModalState(!modalstate)} />
+            <Button title="Create" style={styles.createbutton} onPress={CreatePlaylist} />
+            <Button title="Cancel" style={styles.cancelbutton} onPress={()=> setModalState(!modalstate)} />
+        </View>
+      </BottomModal> */}
+      <Modal
+        visible={modalstate}
+        // animationType="slide"
+        // transparent={true}
+        onHardwareBackPress={() => setModalState(false)}
+      >
+        <View style={styles.modalContent}>
+          <Text style={styles.modalTitle}>Give your playlist a name</Text>
+          <TextInput
+            style={styles.textInput}
+            value={newplaylistname}
+            onChangeText={(text) => setNewPlaylistName(text)}
+          />
+          <View style={styles.buttonContainer}>
+            <Button title="Cancel" onPress={() => setModalState(!modalstate)} />
+            <Button title="Create" onPress={CreatePlaylist} />
+          </View>
         </View>
       </Modal>
     </SafeAreaView>
@@ -223,6 +253,7 @@ const Library = () => {
 
 
 const styles = StyleSheet.create({
+  
   playlistcontainer: {
     // backgroundColor: 'red', 
     height: 75,
@@ -272,15 +303,25 @@ const styles = StyleSheet.create({
   head:{
     height: 70,
     justifyContent: 'center',
-    marginLeft: 15,
-    marginTop: 10
+    alignItems: 'center',
+    // marginLeft: 15,
+    marginTop: 10,
+    flexDirection: 'row'
 
   },
 
   text:{
     color: 'white',
     fontSize: 35,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    width: '80%',
+    // backgroundColor:'blue',
+    // justifyContent: 'center',
+    // alignItems: 'center'
+  },
+
+  plus:{
+    marginTop: 7
   },
 
   
@@ -291,7 +332,43 @@ const styles = StyleSheet.create({
 
   bottomgap: {
     height: 150
+  },
+
+
+
+  modalContainer: {
+    height: '50%',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    // backgroundColor: 'rgba(0, 0, 0, 0.5)', // semi-transparent background
+  },
+  modalContent: {
+    backgroundColor: '#292929',
+    padding: 20,
+    // borderRadius: 10,
+    width: 300,
+  },
+  modalTitle: {
+    fontSize: 23,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    color: 'white'
+  },
+  textInput: {
+    height: 45,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginBottom: 20,
+    paddingHorizontal: 10,
+    color:'white',
+    fontSize: 20
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   }
+
   
 })
 export default Library
