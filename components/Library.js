@@ -31,34 +31,10 @@ const Library = () => {
   // console.log(state);
 
 
-  const addsongs = async(playlistid) =>{
-    const access_token = await AsyncStorage.getItem("token");
-    try{
-      const request = await fetch(`https://api.spotify.com/v1/playlists/${playlistid}/tracks`,{
-        method: 'POST',
-        headers:{
-          Authorization: `Bearer ${access_token}`,
-        },
-        body:{
-          uris: songuri,
-          position: 0,
-        }
-      })
+  
 
-      console.log("added to playlist");
-    }catch(err){
-      console.log(err.message);
-    }
-  }
-
-  const handleplaylist = async (href, state, songuri) => {
-    if (state) {
-      // Add to that playlist function
-      await addsongs(href);
-      navigation.goBack();
-    } else {
-      navigation.navigate("IndividualPlaylist", href);
-    }
+  const handleplaylist = async (href) => {
+    navigation.navigate("IndividualPlaylist", href);
   };
   
 
@@ -165,7 +141,7 @@ const Library = () => {
     // console.log(item.images[0].url);
     
     return(
-        <Pressable onPress={() => handleplaylist(item.href, true, songuri)}>
+        <Pressable onPress={() => handleplaylist(item.href)}>
           <View style={[styles.playlistcontainer, isLastItem? {marginBottom: 150}: null]}>
               {item.images[0]?.url ? ( 
                 
@@ -210,7 +186,7 @@ const Library = () => {
         numColumns={1}/>
 
 
-      {/* <BottomModal
+      <BottomModal
         visible={modalstate}
         onHardwareBackPress={() => setModalState(false)}
         animationType="slide"
@@ -225,7 +201,7 @@ const Library = () => {
             <Button title="Create" style={styles.createbutton} onPress={CreatePlaylist} />
             <Button title="Cancel" style={styles.cancelbutton} onPress={()=> setModalState(!modalstate)} />
         </View>
-      </BottomModal> */}
+      </BottomModal>
       <Modal
         visible={modalstate}
         // animationType="slide"

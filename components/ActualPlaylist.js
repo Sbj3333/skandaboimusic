@@ -15,7 +15,7 @@ import { FlatList } from 'react-native';
 import { SimpleLineIcons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import { Player } from './PlayerContext';
-import { BottomModal, ModalContent } from 'react-native-modals';
+import { BottomModal, ModalContent, Modal } from 'react-native-modals';
 import { useRef } from 'react';
 import { Audio } from 'expo-av';
 import { Entypo } from '@expo/vector-icons';
@@ -40,9 +40,17 @@ const ActualPlaylist = () => {
   const {currentTrack, setCurrentTrack} = useContext(Player)
   const [CPmodalVisible, setCPModalVisible] = useState(false);
   const [state, setState] = useState(false);
+
+  const [selectedphotourl, setSelectedphotourl] = useState(null);
+  const [selectedsongname, setSelectedsongname] = useState(null);
+  const [selectedsongartist, setSelectedsongartist] = useState(null);
+  const [selectedsongurl, setSelectedsongurl] = useState(null);
   // const renderItem = ({})
   const route = useRoute();
   const href = route.params;
+  const addedsongs = route.params.addedsongs;
+
+  console.log(route.params);
   // console.log(href);
 
 
@@ -189,7 +197,7 @@ const ActualPlaylist = () => {
         setCurrentTrack(nextTrack);
         await play(nextTrack);
       }else{
-        console.log("end of playlist")
+        console.log("end of playlist");
       }
     }
    
@@ -214,52 +222,79 @@ const ActualPlaylist = () => {
     console.log("button is pressed");
   }
 
-  const options = () =>{
-    setCPModalVisible(!CPmodalVisible);
-    // navigation.navigate("Library", state);
-  }
+  
 
-  const handleadd = (songuri) =>{
-    setState(true);
-    navigation.navigate("Library", {state, songuri});
+
+
+  const handleadd = async(songuri) =>{
+    navigation.navigate("Selectplaylist", songuri);
+    if(addedsongs){
+      await getplaylist();
+    }
   }
 
   const handleremove = async(songuri) =>{
     await remove(href, songuri);
-    console.log("removed from playlist")
+    console.log("removed from playlist", songuri);
   }
 
-  const remove = async(href, songuri) =>{
+  
+  
+
+  const remove = async (href, songuri) => {
     const access_token = await AsyncStorage.getItem("token");
-    try{
+    try {
       const request = await fetch(`https://api.spotify.com/v1/playlists/${href}/tracks`, {
         method: 'DELETE',
-        headers:{
+        headers: {
           Authorization: `Bearer ${access_token}`,
+          'Content-Type': 'application/json', // Specify the content type
         },
-        body:{
-          tracks:[
+        body: JSON.stringify({
+          tracks: [
             {
-              uri:songuri,
-            }
-          ]
-        }
-      })
-    }catch(err){
+              uri: songuri,
+            },
+          ],
+        }),
+      });
+  
+      // Handle the response if needed
+      const response = await request.json();
+      console.log(response);
+    } catch (err) {
       console.log(err.message);
     }
-  }
+  };
+  
 
   const handleloop = async() =>{
     setLoopStatus(!loopstatus);
   }
 
   const renderItem = ({item}) =>{
-    
+    // const songuri = item.track.href;
+    // console.log("this is the songuri", songuri);
+
+    const options = () =>{
+      setCPModalVisible(!CPmodalVisible);
+      // navigation.navigate("Library", state);
+      setSelectedphotourl(item.track.album.images[0].url);
+      setSelectedsongname(item.track.name);
+      setSelectedsongartist(item.track.artists[0].name);
+      setSelectedsongurl(item.track.href);
+      // console.log(selectedphotourl);
+      // console.log(selectedsongname);
+      // console.log(selectedsongartist);
+      // console.log(selectedsongurl);
+    }
+
 
     return(
       <View>
-        <Pressable onPress={play}>
+        <Pressable 
+          // onPress={() => play(item)}
+        >
           <View style={styles.songcontainer}>
               {item.track.album.images[0]?.url ?(
                 <Image source={{uri: item.track.album.images[0].url}} style={styles.songphoto}/>
@@ -282,39 +317,6 @@ const ActualPlaylist = () => {
 
 
         
-        <BottomModal
-        visible={CPmodalVisible}
-        swipeDirection={["up", "down"]}
-        swipeThreshold={200}>
-        <ModalContent style = {{height: '20%', width: '100%', backgroundColor: 'black'}}>
-          <Entypo name="minus" size={24} color="gray" />
-          <View style={styles.cpimagecontainer}>
-            <Image 
-              source={{uri: item.track.album.images[0].url}}
-              style={styles.cpimage}/>
-            <View style={styles.cptextcontainer}>
-                <Text numberOfLines={1} style={styles.songname}>{item.track.name}</Text>
-                <Text numberOfLines={1} style={styles.artistname}>{item.track.artists[0].name}</Text>
-            </View>
-          </View>
-
-          <View style={styles.optioncontainer}>
-            <View style={styles.addtoplaylist}>
-              <Pressable onPress={handleadd(songuri)}>
-                <AntDesign name="plus" size={24} color="white" />
-                <Text style={styles.addname}>Add to Playlist</Text>
-              </Pressable>
-            </View>
-
-            <View style={styles.removeplaylist}>
-              <Pressable onPress={handleremove(songuri)}>
-                <Entypo name="minus" size={24} color="gray" />
-                <Text style={styles.removename}>Remove from this playlist</Text>
-              </Pressable>
-            </View>
-          </View>
-        </ModalContent>
-        </BottomModal>
       
       </View>
 
@@ -378,7 +380,7 @@ const ActualPlaylist = () => {
         //   onHardwareBackPress={() => setModalVisible(false)}
           swipeDirection={["up", "down"]}
           swipeThreshold={200}>
-            <ModalContent style = {{height: '100%', width: '100%', backgroundColor: 'black'}}>
+            <ModalContent style = {{height: '100%', width: '100%', backgroundColor: 'black', flex: 1, justifyContent: 'flex-end'}}>
             <SafeAreaView>
                 <View style={styles.firstcontainer}>
                   <Pressable onPress={() => {setModalVisible(false)}}>
@@ -495,6 +497,53 @@ const ActualPlaylist = () => {
                 
               </SafeAreaView>
             </ModalContent>
+        </BottomModal>
+
+
+
+        <BottomModal
+        visible={CPmodalVisible}
+        swipeDirection={["down"]}
+        onBackdropPress={() => setCPModalVisible(false)}
+        swipeThreshold={200}
+        style={styles.cpmodal}
+        onHardwareBackPress={() => setCPModalVisible(false)}>
+          <ModalContent style = {{maxHeight:'100%', width: '100%', backgroundColor: "rgba(0,0,0,0.88)"}}>
+            {/* <Entypo name="minus" size={34} color="gray" style={styles.shutter} /> */}
+            <View style={styles.cpimagecontainer}>
+              <Image 
+                // source={{uri: item.track.album.images[0].url}}
+                source={{uri: selectedphotourl}}
+                style={styles.cpimage}/>
+              <View style={styles.cptextcontainer}>
+                  <Text numberOfLines={1} style={styles.cpsongname}>{selectedsongname}</Text>
+                  <Text numberOfLines={1} style={styles.cpartistname}>{selectedsongartist}</Text>
+                  {/* <Text>{selectedsongurl}</Text> */}
+              </View>
+            </View>
+
+            <View style={styles.optioncontainer}>
+              <View >
+                <Pressable 
+                  // onPress={handleadd(selectedsongurl)}
+                  style={styles.addtoplaylist}
+                >
+                  <AntDesign name="plus" size={34} color="white" style={{marginLeft: '2%'}}/>
+                  <Text style={styles.addname}>Add to Playlist</Text>
+                </Pressable>
+              </View>
+
+              <View >
+                <Pressable 
+                  // onPress={handleremove(selectedsongurl)}
+                  style={styles.removeplaylist}
+                >
+                  <Entypo name="minus" size={34} color="white" style={{marginLeft: '2%'}}/>
+                  <Text style={styles.removename}>Remove from this playlist</Text>
+                </Pressable>
+              </View>
+            </View>
+          </ModalContent>
         </BottomModal>
         
     </SafeAreaView>
@@ -778,7 +827,91 @@ const styles=StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems:'center'
+  },
+
+  cpimagecontainer:{
+    height: '45%',
+    // backgroundColor:'blue',
+    flexDirection: 'row',
+    alignItems: 'center',
+
+  },
+
+  cpmodal:{
+    flex: 1,
+    maxHeight: '25%',
+    justifyContent: 'flex-end',
+    margin: 0,
+    backgroundColor: 'blue',
+    
+    // marginBottom: 0,
+    marginTop: '155%'
+  },
+
+  cpimage:{
+    height: '80%',
+    aspectRatio: 1,
+    marginLeft: '1.6%',
+    borderRadius: 5
+  },
+
+  cptextcontainer:{
+    // backgroundColor: 'red',
+    marginLeft: '3%'
+  },
+
+  cpsongname: {
+    color: 'white',
+    fontSize: 18,
+    // fontWeight: 'bold'
+  },
+
+  cpartistname: {
+    color: '#bdbdbd',
+    fontSize: 13,
+    // fontWeight: 'bold'
+  },
+
+  optioncontainer: {
+    // backgroundColor: 'red',
+    marginTop: '6%',
+    gap: 20
+  },
+
+  addtoplaylist:{
+    flexDirection: 'row',
+    alignItems:'center',
+    // backgroundColor: 'blue',
+
+  },
+
+  addname:{
+    marginLeft: '4%',
+    color:'white',
+    fontSize: 15
+  },
+
+  removeplaylist:{
+    flexDirection: 'row',
+    // backgroundColor: 'blue',
+    alignItems: 'center',
+    marginBottom:'5%'
+  },
+
+  removename:{
+    marginLeft: '4%',
+    color:'white',
+    fontSize: 15
+  },
+
+  shutter:{
+    top: 0,
+    justifyContent: 'center',
+    marginTop: 0
   }
+
+
+
 
 
 

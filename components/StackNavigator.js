@@ -10,6 +10,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import ActualPlaylist from "./ActualPlaylist";
 import Modaltrial from "./Modaltrial";
+import Selectplaylist from "./Selectplaylist"
 
 const Tab = createBottomTabNavigator();
 
@@ -94,6 +95,8 @@ function Navigation(){
                 <Stack.Screen name="Search" component={Search} options={{headerShown: false}}/>
                 <Stack.Screen name="Library" component={Library} options={{headerShown:false}}/>
                 <Stack.Screen name="IndividualPlaylist" component={ActualPlaylist} options={{headerShown: false}}/>
+                <Stack.Screen name="Selectplaylist" component={Selectplaylist} options={{headerShown: false}}/>
+
             </Stack.Navigator>
         </NavigationContainer>
     )
