@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Button, FlatList } from 'react-native';
 import RNFS from 'react-native-fs';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
+import { Platform } from 'react-native';
 const isAndroid = Platform.OS === 'android';
 const isIOS = Platform.OS === 'ios';
 
@@ -28,6 +28,7 @@ const AudioList = () => {
       });
 
       setAudioFiles(audioFiles);
+      console.log(audioFiles);
     } catch (error) {
       console.error('Error listing audio files:', error);
     }
@@ -39,28 +40,26 @@ const AudioList = () => {
 
 
   const renderItem = ({item}) =>{
-    <View>
-      <Pressable onPress={play}>
-          <View style={styles.songcontainer}>
-              {item.track.album.images[0]?.url ?(
-                <Image source={{uri: item.track.album.images[0].url}} style={styles.songphoto}/>
-              ):(
-                <Image source={require('../assets/music.jpeg')} style={styles.songphoto}/>
 
-              )}
-              <View style={styles.songnamecontainer}>
-                <Text numberOfLines={1} style={styles.songname}>{item.track.name}</Text>
-                <Text numberOfLines={1} style={styles.artistname}>{item.track.artists[0].name}</Text>
-              </View>
-              {/* <Image source={require('../assets/heartopen.png')} style={styles.heart}/> */}
-              {/* <Image source={require('../assets/options_icon.png')} style={styles.option}/> */}
-              {/* <AntDesign name="hearto" size={22} color="white" style={styles.heart} /> */}
-              <AntDesign name="heart" size={22} color="red" style={styles.heart} />
-              
-              <SimpleLineIcons name="options-vertical" size={24} color="white" style={styles.option} onPress={options(true)}/>
-          </View>
-        </Pressable>
-    </View>
+    return(
+      <View>
+        <Pressable onPress={play}>
+            <View style={styles.songcontainer}>
+                <Image source={require('../assets/music.jpeg')} style={styles.songphoto}/>
+                <View style={styles.songnamecontainer}>
+                  <Text numberOfLines={1} style={styles.songname}>{item.track.name}</Text>
+                  <Text numberOfLines={1} style={styles.artistname}>{item.track.artists[0].name}</Text>
+                </View>
+                {/* <Image source={require('../assets/heartopen.png')} style={styles.heart}/> */}
+                {/* <Image source={require('../assets/options_icon.png')} style={styles.option}/> */}
+                {/* <AntDesign name="hearto" size={22} color="white" style={styles.heart} /> */}
+                <AntDesign name="heart" size={22} color="red" style={styles.heart} />
+                
+                <SimpleLineIcons name="options-vertical" size={24} color="white" style={styles.option} onPress={options(true)}/>
+            </View>
+          </Pressable>
+      </View>
+    )
   }
 
   return (

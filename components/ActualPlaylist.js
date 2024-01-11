@@ -291,9 +291,9 @@ const ActualPlaylist = () => {
 
 
     return(
-      <View>
+      <View style={styles.ultimate}>
         <Pressable 
-          // onPress={() => play(item)}
+          onPress={() => play(item)}
         >
           <View style={styles.songcontainer}>
               {item.track.album.images[0]?.url ?(
@@ -309,11 +309,12 @@ const ActualPlaylist = () => {
               {/* <Image source={require('../assets/heartopen.png')} style={styles.heart}/> */}
               {/* <Image source={require('../assets/options_icon.png')} style={styles.option}/> */}
               {/* <AntDesign name="hearto" size={22} color="white" style={styles.heart} /> */}
-              <AntDesign name="heart" size={22} color="red" style={styles.heart} />
               
-              <SimpleLineIcons name="options-vertical" size={24} color="white" style={styles.option} onPress={options}/>
           </View>
         </Pressable>
+            
+        <AntDesign name="heart" size={22} color="#c70606" style={styles.heart} />
+        <SimpleLineIcons name="options-vertical" size={24} color="white" style={styles.option} onPress={options}/>
 
 
         
@@ -504,12 +505,12 @@ const ActualPlaylist = () => {
         <BottomModal
         visible={CPmodalVisible}
         swipeDirection={["down"]}
-        onBackdropPress={() => setCPModalVisible(false)}
-        swipeThreshold={200}
+        // onBackdropPress={() => setCPModalVisible(false)}
+        swipeThreshold={20}
         style={styles.cpmodal}
-        onHardwareBackPress={() => setCPModalVisible(false)}>
+        onSwipeOut={() => setCPModalVisible(false)}
+        onHardwareBackPress={() => setCPModalVisible(!CPmodalVisible)}>
           <ModalContent style = {{maxHeight:'100%', width: '100%', backgroundColor: "rgba(0,0,0,0.88)"}}>
-            {/* <Entypo name="minus" size={34} color="gray" style={styles.shutter} /> */}
             <View style={styles.cpimagecontainer}>
               <Image 
                 // source={{uri: item.track.album.images[0].url}}
@@ -520,6 +521,15 @@ const ActualPlaylist = () => {
                   <Text numberOfLines={1} style={styles.cpartistname}>{selectedsongartist}</Text>
                   {/* <Text>{selectedsongurl}</Text> */}
               </View>
+              {/* <Pressable 
+                onPress={() => setCPModalVisible(false)}
+              >
+                <AntDesign name="close" size={28} color="white" style={styles.xmark}/>
+                <Entypo name="minus" size={34} color="gray" style={styles.xmark} />
+
+              </Pressable> */}
+
+
             </View>
 
             <View style={styles.optioncontainer}>
@@ -551,10 +561,12 @@ const ActualPlaylist = () => {
 }
 
 const styles=StyleSheet.create({
-
+  ultimate:{
+    flexDirection: 'row'
+  },
 
   songcontainer:{
-    backgroundColor: 'black',
+    // backgroundColor: 'red',
     height: 65,
     padding: 6,
     flexDirection: 'row'
@@ -591,8 +603,8 @@ const styles=StyleSheet.create({
     height: '40%',
     width: '10%',
     // objectFit: 'contain',
-    marginTop: 10,
-    marginLeft: 10
+    marginTop: 12,
+    marginLeft: 17
     // backgroundColor: 'plum'
   },
 
@@ -600,7 +612,7 @@ const styles=StyleSheet.create({
     height: '50%',
     width: '12%',
     marginTop: 10,
-    marginLeft: 20,
+    marginLeft: 13,
     // backgroundColor: 'gray'
   },
   
@@ -838,14 +850,8 @@ const styles=StyleSheet.create({
   },
 
   cpmodal:{
-    flex: 1,
-    maxHeight: '25%',
-    justifyContent: 'flex-end',
-    margin: 0,
-    backgroundColor: 'blue',
-    
-    // marginBottom: 0,
-    marginTop: '155%'
+    maxHeight: '30%',
+    marginTop: 'auto'
   },
 
   cpimage:{
@@ -870,6 +876,11 @@ const styles=StyleSheet.create({
     color: '#bdbdbd',
     fontSize: 13,
     // fontWeight: 'bold'
+  },
+
+  xmark:{
+    marginLeft: '65%',
+    marginTop: '-23%'
   },
 
   optioncontainer: {

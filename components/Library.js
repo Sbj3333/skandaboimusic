@@ -134,6 +134,14 @@ const Library = () => {
     }
   }
 
+  const handleLikedsongs = async() =>{
+    navigation.navigate("Likedsongs");
+  }
+
+  const handleLocalfiles = async() =>{
+    navigation.navigate("Localfiles");
+  }
+
 
   const renderItem = ({item, index}) =>{
     const isLastItem = index === (userplaylists.length - 1); 
@@ -172,21 +180,54 @@ const Library = () => {
   
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.head}>
-        <Text style={styles.text}>My Library</Text>
-        <Pressable onPress={handleCreatePlaylist}>
-          <AntDesign name="plus" size={34} style={styles.plus} color="white" />
+      <ScrollView>
+        <View style={styles.head}>
+          <Text style={styles.text}>My Library</Text>
+          <Pressable onPress={handleCreatePlaylist}>
+            <AntDesign name="plus" size={34} style={styles.plus} color="white" />
+          </Pressable>
+          
+        </View>
+
+        {/* liked songs */}
+        <View style={styles.gap}></View>
+        <Pressable 
+          onPress={() => handleLikedsongs()}
+        >
+            <View style={styles.playlistcontainer}>
+                <Image
+                    style={styles.playlistimage}
+                    source={require('../assets/music.jpeg')}/>
+                <View style={styles.playlistnamecontainer}>
+                    <Text numberOfLines={1} style={styles.playlistname}>Liked Songs</Text>
+                </View>
+            </View>
+            <View style={styles.gap}></View>
         </Pressable>
-        
-      </View>
-      <View style={styles.gap}></View>
-      <FlatList 
-        data={userplaylists} 
-        renderItem={renderItem} 
-        numColumns={1}/>
+
+        {/* Local files */}
+        <Pressable 
+          onPress={() => handleLocalfiles()}
+        >
+            <View style={styles.playlistcontainer}>
+                <Image
+                    style={styles.playlistimage}
+                    source={require('../assets/music.jpeg')}/>
+                <View style={styles.playlistnamecontainer}>
+                    <Text numberOfLines={1} style={styles.playlistname}>Local files</Text>
+                </View>
+            </View>
+            <View style={styles.gap}></View>
+        </Pressable>
 
 
-      <BottomModal
+        <FlatList 
+          data={userplaylists} 
+          renderItem={renderItem} 
+          numColumns={1}/>
+      </ScrollView>
+
+      {/* <BottomModal
         visible={modalstate}
         onHardwareBackPress={() => setModalState(false)}
         animationType="slide"
@@ -201,7 +242,8 @@ const Library = () => {
             <Button title="Create" style={styles.createbutton} onPress={CreatePlaylist} />
             <Button title="Cancel" style={styles.cancelbutton} onPress={()=> setModalState(!modalstate)} />
         </View>
-      </BottomModal>
+      </BottomModal> */}
+      
       <Modal
         visible={modalstate}
         // animationType="slide"
