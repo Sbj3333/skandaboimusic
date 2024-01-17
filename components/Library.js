@@ -190,7 +190,7 @@ const Library = () => {
         </View>
 
         {/* liked songs */}
-        <View style={styles.gap}></View>
+        {/* <View style={styles.gap}></View>
         <Pressable 
           onPress={() => handleLikedsongs()}
         >
@@ -203,10 +203,10 @@ const Library = () => {
                 </View>
             </View>
             <View style={styles.gap}></View>
-        </Pressable>
+        </Pressable> */}
 
         {/* Local files */}
-        <Pressable 
+        {/* <Pressable 
           onPress={() => handleLocalfiles()}
         >
             <View style={styles.playlistcontainer}>
@@ -218,7 +218,7 @@ const Library = () => {
                 </View>
             </View>
             <View style={styles.gap}></View>
-        </Pressable>
+        </Pressable> */}
 
 
         <FlatList 
