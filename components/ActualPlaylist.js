@@ -228,13 +228,18 @@ const ActualPlaylist = () => {
 
   const handleadd = async(songuri) =>{
     navigation.navigate("Selectplaylist", songuri);
-    if(addedsongs){
-      await getplaylist();
-    }
+    console.log("song link is", songuri);
+    // if(addedsongs){
+    //   await getplaylist();
+    // }
+    // console.log("shit worked i guess")
+    setCPModalVisible(false);
   }
 
   const handleremove = async(songuri) =>{
     await remove(href, songuri);
+    setCPModalVisible(false)
+    getplaylist();
     console.log("removed from playlist", songuri);
   }
 
@@ -243,8 +248,10 @@ const ActualPlaylist = () => {
 
   const remove = async (href, songuri) => {
     const access_token = await AsyncStorage.getItem("token");
+    console.log("href", href)
+    const id = href.split("/").pop();
     try {
-      const request = await fetch(`https://api.spotify.com/v1/playlists/${href}/tracks`, {
+      const request = await fetch(`https://api.spotify.com/v1/playlists/${id}/tracks`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${access_token}`,
@@ -282,7 +289,8 @@ const ActualPlaylist = () => {
       setSelectedphotourl(item.track.album.images[0].url);
       setSelectedsongname(item.track.name);
       setSelectedsongartist(item.track.artists[0].name);
-      setSelectedsongurl(item.track.href);
+      setSelectedsongurl(item.track.uri);
+      console.log("selectedsongurl", JSON.stringify(item.track.uri, null, 2));
       // console.log(selectedphotourl);
       // console.log(selectedsongname);
       // console.log(selectedsongartist);
@@ -290,14 +298,12 @@ const ActualPlaylist = () => {
     }
 
 
-    return(
-      <View style={styles.ultimate}>
-        <Pressable 
-          onPress={() => play(item)}
-        >
-          <View style={styles.songcontainer}>
+    return( 
+      <View style={styles.ultimate}> 
+      <Pressable onPress={() => play(item)} > 
+          <View style={styles.songcontainer}> 
               {item.track.album.images[0]?.url ?(
-                <Image source={{uri: item.track.album.images[0].url}} style={styles.songphoto}/>
+               <Image source={{uri: item.track.album.images[0].url}} style={styles.songphoto}/>
               ):(
                 <Image source={require('../assets/music.jpeg')} style={styles.songphoto}/>
 
@@ -316,7 +322,7 @@ const ActualPlaylist = () => {
         <AntDesign name="heart" size={22} color="#c70606" style={styles.heart} />
         <SimpleLineIcons name="options-vertical" size={24} color="white" style={styles.option} onPress={options}/>
 
-
+ 
         
       
       </View>
@@ -389,7 +395,7 @@ const ActualPlaylist = () => {
                   </Pressable>
 
                   <View style={styles.textcontainer}>
-                    <Text style={styles.constant}>Playing songs from your library</Text>
+                    <Text style={styles.constant}>Playing songs from your library</Text> 
                     <Text style={styles.library}>Liked songs</Text>
                   </View>
 
@@ -535,7 +541,7 @@ const ActualPlaylist = () => {
             <View style={styles.optioncontainer}>
               <View >
                 <Pressable 
-                  // onPress={handleadd(selectedsongurl)}
+                  onPress={() => handleadd(selectedsongurl)}
                   style={styles.addtoplaylist}
                 >
                   <AntDesign name="plus" size={34} color="white" style={{marginLeft: '2%'}}/>
@@ -545,7 +551,7 @@ const ActualPlaylist = () => {
 
               <View >
                 <Pressable 
-                  // onPress={handleremove(selectedsongurl)}
+                  onPress={() => handleremove(selectedsongurl)}
                   style={styles.removeplaylist}
                 >
                   <Entypo name="minus" size={34} color="white" style={{marginLeft: '2%'}}/>

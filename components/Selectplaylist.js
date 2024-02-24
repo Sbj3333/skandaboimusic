@@ -21,15 +21,21 @@ const Library = () => {
 
   const addsongs = async (playlistid, songuris) => {
     const access_token = await AsyncStorage.getItem("token");
+    // const uris = Array.isArray(songuris) ? songuris : [songuris];
+    console.log("uris", songuri)
+    console.log("playlistid", playlistid)
+    const id = playlistid.split("/").pop();
+    console.log("id", id)
     try {
-      const request = await fetch(`https://api.spotify.com/v1/playlists/${playlistid}/tracks`, {
+      const request = await fetch(`https://api.spotify.com/v1/playlists/${id}/tracks`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${access_token}`,
           'Content-Type': 'application/json', // Specify the content type
         },
+
         body: JSON.stringify({
-          uris: songuris,
+          uris: [songuri],
           position: 0,
         }),
       });
@@ -39,13 +45,21 @@ const Library = () => {
       console.log("added to playlist", response);
     } catch (err) {
       console.log(err.message);
+      console.log("answer is ", songuris);
+      
+
     }
   };
+
+  
   
 
   const handleplaylist = async (href2) => {
+    console.log("playlist name is ", href2)
     await addsongs(href2, songuri);
+    console.log("is it working")
     setAddedsongs(true);
+    console.log("songs are", addedsongs);
     navigation.navigate("IndividualPlaylist", addedsongs);
     
   };
@@ -61,6 +75,7 @@ const Library = () => {
       });
       const data = await response.json();
       setUserPlaylists(data.items);
+      // console.log(JSON.stringify(data.items));
       return data;
     } catch {
         console.log("error getting user playlists");

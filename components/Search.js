@@ -8,17 +8,21 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 const Search = () => {
   const [query, setQuery] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
+  // const [searchResults, setSearchResults] = useState([]);
+  // console.log(query);
 
-  const searchspotify = async() =>{
+  const searchspotify = async(query) =>{
     const accessToken = await AsyncStorage.getItem("token");
+    console.log(query)
+    // setQuery(hello);
+    
     try{
-      const response = await fetch(`https://api.spotify.com/v1/search?q=${query}&type=track`,{
+      const response = await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track`,{
         headers: {
           Authorization: `Bearer ${accessToken}`,
         }
       });
-      setSearchResults(response);
+      // setSearchResults(response);
       // console.log(query);
       console.log(JSON.stringify(response, null, 2));
     } catch{
@@ -47,11 +51,14 @@ const Search = () => {
           onChangeText={(text) => setQuery(text)}
           style={styles.searchbar}/>
         <Pressable>
-          <AntDesign name="search1" size={24} color="white" onPress={searchspotify}  style={styles.searchbutton}/>
+          <AntDesign name="search1" size={24} color="white" 
+            // onPress={searchspotify(query)}  
+            style={styles.searchbutton}
+          />
         </Pressable>
       </View>
       <FlatList
-        data={searchResults}
+        // data={searchResults}
         renderItem={renderItem}
         style={{backgroundColor:'black'}}
       />
