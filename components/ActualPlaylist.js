@@ -290,7 +290,7 @@ const ActualPlaylist = () => {
       setSelectedsongname(item.track.name);
       setSelectedsongartist(item.track.artists[0].name);
       setSelectedsongurl(item.track.uri);
-      console.log("selectedsongurl", JSON.stringify(item.track.uri, null, 2));
+      // console.log("selectedsongurl", JSON.stringify(item.track.uri, null, 2));
       // console.log(selectedphotourl);
       // console.log(selectedsongname);
       // console.log(selectedsongartist);

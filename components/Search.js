@@ -29,7 +29,7 @@ const Search = () => {
       const result = data.tracks.items;
       // console.log(JSON.stringify(result, null, 2));
       setSearchResults(result);
-      console.log(JSON.stringify(result, null, 2));
+      // console.log(JSON.stringify(result, null, 2));
 
     } catch{
       console.log("error fetching songs");
