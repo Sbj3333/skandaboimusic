@@ -1,14 +1,16 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button, StyleSheet, Text, TextInput, View } from 'react-native'
 import { FlatList } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { AntDesign } from '@expo/vector-icons';
 import { Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Image } from 'react-native';
+
 
 const Search = () => {
   const [query, setQuery] = useState('');
-  // const [searchResults, setSearchResults] = useState([]);
+  const [searchResults, setSearchResults] = useState([]);
   // console.log(query);
 
   const searchspotify = async(query) =>{
@@ -22,15 +24,24 @@ const Search = () => {
           Authorization: `Bearer ${accessToken}`,
         }
       });
-      // setSearchResults(response);
       // console.log(query);
-      console.log(JSON.stringify(response, null, 2));
+      const data = await response.json();
+      const result = data.tracks.items;
+      // console.log(JSON.stringify(result, null, 2));
+      setSearchResults(result);
+      console.log(JSON.stringify(result, null, 2));
+
     } catch{
       console.log("error fetching songs");
     }
   }
 
+  useEffect(() => {
+    searchspotify();
+  }, []);
+
   const renderItem = ({item}) =>{
+    console.log("item", item);
     return(
       <View style={styles.songcontainer}>
         <Image source={{uri: item.album.images[0].url}} style ={styles.songimage}/>
@@ -52,13 +63,13 @@ const Search = () => {
           style={styles.searchbar}/>
         <Pressable>
           <AntDesign name="search1" size={24} color="white" 
-            // onPress={searchspotify(query)}  
+            onPress={() => searchspotify(query)}  
             style={styles.searchbutton}
           />
         </Pressable>
       </View>
       <FlatList
-        // data={searchResults}
+        data={searchResults}
         renderItem={renderItem}
         style={{backgroundColor:'black'}}
       />
