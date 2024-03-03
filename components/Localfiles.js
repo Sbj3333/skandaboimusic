@@ -241,3 +241,61 @@
 // };
 
 // export default AudioList;
+
+import React, { useState, useEffect } from 'react';
+import { View, Text, FlatList, Button, Platform } from 'react-native';
+import * as MediaLibrary from 'expo-media-library';
+import * as FileSystem from 'expo-file-system';
+
+const AudioList = () => {
+  const [audioFiles, setAudioFiles] = useState([]);
+
+  useEffect(() => {
+    (async () => {
+      if (Platform.OS === 'android') {
+        const { status } = await MediaLibrary.requestPermissionsAsync();
+        if (status !== 'granted') {
+          console.error('Permission to access media library denied');
+          return;
+        }
+      }
+
+      listAudioFiles();
+    })();
+  }, []);
+
+  const listAudioFiles = async () => {
+    try {
+      const mediaAssets = await MediaLibrary.getAssetsAsync({
+        mediaType: 'audio',
+      });
+
+      const audioFiles = mediaAssets.assets.map(asset => asset.uri);
+
+      setAudioFiles(audioFiles);
+      console.log(audioFiles);
+    } catch (error) {
+      console.error('Error listing audio files:', error);
+    }
+  };
+
+  const renderItem = ({ item }) => {
+    return (
+      <View>
+        <Text>{item}</Text>
+      </View>
+    );
+  };
+
+  return (
+    <View>
+      <FlatList
+        data={audioFiles}
+        renderItem={renderItem}
+        keyExtractor={(item, index) => index.toString()}
+      />
+    </View>
+  );
+};
+
+export default AudioList;

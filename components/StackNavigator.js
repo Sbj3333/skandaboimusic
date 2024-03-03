@@ -99,7 +99,7 @@ function Navigation(){
                 <Stack.Screen name="IndividualPlaylist" component={ActualPlaylist} options={{headerShown: false}}/>
                 <Stack.Screen name="Selectplaylist" component={Selectplaylist} options={{headerShown: false}}/>
                 <Stack.Screen name="Likedsongs" component={Likedsongs} options={{headerShown: false}}/>
-                {/* <Stack.Screen name="Localfiles" component={Localfiles} options={{headerShown: false}}/> */}
+                <Stack.Screen name="Localfiles" component={Localfiles} options={{headerShown: false}}/>
 
 
             </Stack.Navigator>
