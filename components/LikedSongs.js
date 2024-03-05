@@ -35,7 +35,7 @@ const LikedSongs = () => {
     const [shufflestatus, setShuffleStatus] = useState(false);
     const {currentTrack, setCurrentTrack} = useContext(Player)
     const [CPmodalVisible, setCPModalVisible] = useState(false);
-
+    const navigation = useNavigation(); 
 
     const playTrack = async () => {
         console.log("trying to play", songindex);
@@ -219,7 +219,7 @@ const LikedSongs = () => {
     const getlikedsongs = async() =>{
         const accessToken = await AsyncStorage.getItem("token");
         try{
-          const response = await fetch("https://api.spotify.com/v1/me/tracks", {
+          const response = await fetch("https://api.spotify.com/v1/me/tracks?limit=50", {
             headers: {
               Authorization: `Bearer ${accessToken}`,
       

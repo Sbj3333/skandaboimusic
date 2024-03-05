@@ -26,6 +26,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 const ActualPlaylist = () => {
   const navigation = useNavigation();
   const [actualplaylists, setActualPlaylists] = useState([]);
+  const [liked, setLiked] = useState([]);
   const [playlistname, setPlaylistName] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const value = useRef(0);
@@ -72,7 +73,7 @@ const ActualPlaylist = () => {
         // console.log(JSON.stringify(data.tracks.items[1], null, 2));
         // console.log(JSON.stringify(data.tracks.items[1].track.artists[0].name, null, 2)); //artist name
         // console.log(JSON.stringify(data.tracks.items[1].track.album.images[0].url, null, 2)); //image
-
+        // console.log(JSON.stringify(data.tracks.items.track.uri, null, 2))
 
         return data;
       } catch {
@@ -279,10 +280,19 @@ const ActualPlaylist = () => {
     setLoopStatus(!loopstatus);
   }
 
+  // console.log("array", Myarray1);
+  const Myarray = []
+  // const Myarray = new Array();
   const renderItem = ({item}) =>{
-    // const songuri = item.track.href;
-    // console.log("this is the songuri", songuri);
+    const musicuri = item.track.href;
+    const musicid = musicuri.split("/").pop()
+    // console.log("this is the songuri", musicid);
+    Myarray.push(musicid);
 
+    // setMyarray1(Myarray);
+
+    // console.log("array", Myarray)
+    
     const options = () =>{
       setCPModalVisible(!CPmodalVisible);
       // navigation.navigate("Library", state);
@@ -295,9 +305,10 @@ const ActualPlaylist = () => {
       // console.log(selectedsongname);
       // console.log(selectedsongartist);
       // console.log(selectedsongurl);
+      
     }
 
-
+    
     return( 
       <View style={styles.ultimate}> 
       <Pressable onPress={() => play(item)} > 
@@ -330,6 +341,34 @@ const ActualPlaylist = () => {
 
     )
   }
+  const checklikedsongs = async (ids) => {
+    // await renderItem();
+    const accessToken = await AsyncStorage.getItem("token");
+    try {
+      const response = await fetch(`https://api.spotify.com/v1/me/tracks/contains?ids=${ids.join(',')}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
+      });
+      
+      const data = await response.json();
+      console.log("arraybefore", Myarray);
+      console.log(data);
+      setLiked(data);
+      console.log("array", Myarray.join(','))
+
+      return data;
+    } catch (error) {
+      console.error('Error fetching Spotify tracks:', error);
+    }
+  }
+  useEffect(() => {
+    checklikedsongs(Myarray);
+  }, []);
+  
+  
+  
   
   return (
     
