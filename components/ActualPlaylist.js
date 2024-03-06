@@ -19,6 +19,7 @@ import { BottomModal, ModalContent, Modal } from 'react-native-modals';
 import { useRef } from 'react';
 import { Audio } from 'expo-av';
 import { Entypo } from '@expo/vector-icons';
+import { Alert } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 
 
@@ -85,13 +86,13 @@ const ActualPlaylist = () => {
     getplaylist();
   }, []);
 
-  const playTrack = async () => {
-    console.log("trying to play", songindex);
-    if (actualplaylists.length >0){
-      setCurrentTrack(actualplaylists[0]);
-    }
-    await play(actualplaylists[0]);
-  }
+  // const playTrack = async () => {
+  //   console.log("trying to play", songindex);
+  //   if (actualplaylists.length >0){
+  //     setCurrentTrack(actualplaylists[0]);
+  //   }
+  //   await play(actualplaylists[0]);
+  // }
 
   // const handlefirstimeclicks = async() =>{
   //   setFirstClick(true);
@@ -104,54 +105,54 @@ const ActualPlaylist = () => {
   // }
 
 
-  const play = async (nextTrack) =>{
-    console.log(nextTrack);
-    const songhref = nextTrack?.track?.href;
-    const preview_url = nextTrack?.track.preview_url;
-    console.log("href", songhref);
-    try{
-      if(currentSound){
-        await currentSound.stopAsync();
-      }
-      await Audio.setAudioModeAsync({
-        playInSilentModeIOS: true,
-        staysActiveInBackground: true,
-        shouldDuckAndroid: false,
-      });
-      const {sound, status} = await Audio.Sound.createAsync(
-        {
-          uri: preview_url,
-        },
-        {
-          shouldPlay: true,
-          isLooping: loopstatus,
-        },
-        onPlaybackStatusUpdate
+  // const play = async (nextTrack) =>{
+  //   console.log(nextTrack);
+  //   const songhref = nextTrack?.track?.href;
+  //   const preview_url = nextTrack?.track.preview_url;
+  //   console.log("href", songhref);
+  //   try{
+  //     if(currentSound){
+  //       await currentSound.stopAsync();
+  //     }
+  //     await Audio.setAudioModeAsync({
+  //       playInSilentModeIOS: true,
+  //       staysActiveInBackground: true,
+  //       shouldDuckAndroid: false,
+  //     });
+  //     const {sound, status} = await Audio.Sound.createAsync(
+  //       {
+  //         uri: preview_url,
+  //       },
+  //       {
+  //         shouldPlay: true,
+  //         isLooping: loopstatus,
+  //       },
+  //       onPlaybackStatusUpdate
 
-      );
-      onPlaybackStatusUpdate(status);
-      setCurrentSound(sound);
-      setIsPlaying(status.isLoaded);
-      await sound.playAsync();
-    } catch(err){
-      console.log(err.message);
-    }
-  }
+  //     );
+  //     onPlaybackStatusUpdate(status);
+  //     setCurrentSound(sound);
+  //     setIsPlaying(status.isLoaded);
+  //     await sound.playAsync();
+  //   } catch(err){
+  //     console.log(err.message);
+  //   }
+  // }
 
-  const onPlaybackStatusUpdate = async (status) =>{
-    console.log(status);
-    if (status.isLoaded && status.isPlaying){
-      const progress = status.positionMillis / status.durationMillis;
-      console.log("progress" ,progress);
-      setProgress(progress);
-      setCurrentTime(status.positionMillis);
-      setTotalDuration(status.durationMillis);
-    }
-    if(status.didJustFinish === true){
-      setCurrentSound(null);
-      playNextTrack(shufflestatus);
-    }
-  };
+  // const onPlaybackStatusUpdate = async (status) =>{
+  //   console.log(status);
+  //   if (status.isLoaded && status.isPlaying){
+  //     const progress = status.positionMillis / status.durationMillis;
+  //     console.log("progress" ,progress);
+  //     setProgress(progress);
+  //     setCurrentTime(status.positionMillis);
+  //     setTotalDuration(status.durationMillis);
+  //   }
+  //   if(status.didJustFinish === true){
+  //     setCurrentSound(null);
+  //     playNextTrack(shufflestatus);
+  //   }
+  // };
 
   const circleSize = 12;
   const formatTime = (time) => {
@@ -160,16 +161,16 @@ const ActualPlaylist = () => {
     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   };
 
-  const handlePlayPause = async() => {
-    if(currentSound){
-      if(isPlaying){
-        await currentSound.pauseAsync();
-      }else{
-        await currentSound.playAsync();
-      }
-      setIsPlaying(!isPlaying);
-    }
-  };
+  // const handlePlayPause = async() => {
+  //   if(currentSound){
+  //     if(isPlaying){
+  //       await currentSound.pauseAsync();
+  //     }else{
+  //       await currentSound.playAsync();
+  //     }
+  //     setIsPlaying(!isPlaying);
+  //   }
+  // };
 
 
   function getRandomInt(min, max) {
@@ -180,48 +181,48 @@ const ActualPlaylist = () => {
 
   
 
-  const playNextTrack = async (shufflestatus) => {
-    if (currentSound){
-      await currentSound.stopAsync();
-      setCurrentSound(null);
-    }
-    if(shufflestatus){
-      const SnextTrack = actualplaylists[getRandomInt(0, actualplaylists.length)];
-      setCurrentTrack(SnextTrack);
-      await play(SnextTrack);
-    }
-    else{
-       value.current += 1;
-      if (value.current < actualplaylists.length){
-        const nextTrack = actualplaylists[value.current];
-        console.log(nextTrack);
-        setCurrentTrack(nextTrack);
-        await play(nextTrack);
-      }else{
-        console.log("end of playlist");
-      }
-    }
+  // const playNextTrack = async (shufflestatus) => {
+  //   if (currentSound){
+  //     await currentSound.stopAsync();
+  //     setCurrentSound(null);
+  //   }
+  //   if(shufflestatus){
+  //     const SnextTrack = actualplaylists[getRandomInt(0, actualplaylists.length)];
+  //     setCurrentTrack(SnextTrack);
+  //     await play(SnextTrack);
+  //   }
+  //   else{
+  //      value.current += 1;
+  //     if (value.current < actualplaylists.length){
+  //       const nextTrack = actualplaylists[value.current];
+  //       console.log(nextTrack);
+  //       setCurrentTrack(nextTrack);
+  //       await play(nextTrack);
+  //     }else{
+  //       console.log("end of playlist");
+  //     }
+  //   }
    
-  };
+  // };
 
-  const playPreviousTrack = async () => {
-    if(currentSound){
-      await currentSound.stopAsync();
-      setCurrentSound(null);
-    }
-    value.current -=1;
-    if(value.current < actualplaylists.length){
-      const nextTrack = actualplaylists[value.current];
-      setCurrentTrack(nextTrack);
-      await play(nextTrack)
-    }else{
-      console.log("end of playlist");
-    }
-  };
+  // const playPreviousTrack = async () => {
+  //   if(currentSound){
+  //     await currentSound.stopAsync();
+  //     setCurrentSound(null);
+  //   }
+  //   value.current -=1;
+  //   if(value.current < actualplaylists.length){
+  //     const nextTrack = actualplaylists[value.current];
+  //     setCurrentTrack(nextTrack);
+  //     await play(nextTrack)
+  //   }else{
+  //     console.log("end of playlist");
+  //   }
+  // };
 
-  const pressed = async() =>{
-    console.log("button is pressed");
-  }
+  // const pressed = async() =>{
+  //   console.log("button is pressed");
+  // }
 
   
 
@@ -274,6 +275,115 @@ const ActualPlaylist = () => {
       console.log(err.message);
     }
   };
+
+  const addtolikedsongs = async(uri) =>{
+    const access_token = await AsyncStorage.getItem("token");
+    // console.log("href", href);
+    const id = uri.split("/").pop();
+    try {
+      const request = await fetch(`https://api.spotify.com/v1/me/tracks?ids=${id}`, {
+        method: 'PUT', 
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+          'Content-Type': 'application/json',
+        }
+      })
+      const response = await request.json();
+      console.log(response);
+
+    }catch(err){
+      console.log(err.message);
+    }
+  };
+
+  const handleaddlikedsongs = async(uri) =>{
+    await addtolikedsongs(uri);
+
+    //modal
+    Alert.alert('Message', 'Added to Liked Songs', [
+      {
+        text: 'OK', 
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      }
+    ]);
+    getplaylist();
+    console.log("added to liked songs", uri);
+
+
+  }
+
+  const removefromlikedsongs = async(uri) =>{
+    const access_token = await AsyncStorage.getItem("token");
+    const id = uri.split("/").pop();
+    try{
+      const request = await fetch(`https://api.spotify.com/v1/me/tracks?ids=${id}`,{
+        method: 'DELETE', 
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+          'Content-Type': 'application/json', 
+        }
+      })
+      const response = await request.json();
+      console.log(response);
+
+    }catch(err){
+      console.log(err.message);
+    }
+  };
+
+  const handleremovelikedsongs = async(uri) =>{
+    await removefromlikedsongs(uri);
+    //modal
+    Alert.alert('Message', 'Removed from Liked Songs', [
+      {
+        text: 'OK', 
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      }
+    ]);
+    getplaylist();
+    console.log("removed from liked songs", uri);
+  }
+
+
+  const getplaybackstate = async() =>{
+    const access_token = await AsyncStorage.getItem("token");
+    try{
+      const request = await fetch(`https://api.spotify.com/v1/me/player`, {
+        method: 'GET', 
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+          'Content-Type': 'application/json',
+        }
+  
+      })
+      const response = await request.json();
+      console.log(response);
+    }catch(err){
+      console.log(err.message);
+    }
+  }
+
+  const getcurrentlyplaying = async() =>{
+    const access_token = await AsyncStorage.getItem("token");
+    try{
+      const request = await fetch(`https://api.spotify.com/v1/me/player/currently-playing`, {
+        method: 'GET', 
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+          'Content-Type': 'application/json',
+        }
+  
+      })
+      const response = await request.json();
+      console.log(response);
+    }catch(err){
+      console.log(err.message);
+    }
+  }
+
+  
   
 
   const handleloop = async() =>{
@@ -283,7 +393,10 @@ const ActualPlaylist = () => {
   // console.log("array", Myarray1);
   const Myarray = []
   // const Myarray = new Array();
-  const renderItem = ({item}) =>{
+
+
+
+  const renderItem = ({item, index}) =>{
     const musicuri = item.track.href;
     const musicid = musicuri.split("/").pop()
     // console.log("this is the songuri", musicid);
@@ -329,8 +442,12 @@ const ActualPlaylist = () => {
               
           </View>
         </Pressable>
-            
-        <AntDesign name="heart" size={22} color="#c70606" style={styles.heart} />
+
+        {Myarray[index]?(
+          <AntDesign name="heart" size={22} color="#c70606" style={styles.heart} onPress={handleaddlikedsongs(item.track.href)} />
+        ):(
+          <AntDesign name="hearto" size={22} color="black" style={styles.heart} onPress={handleremovelikedsongs(item.track.href)}/>
+        )}  
         <SimpleLineIcons name="options-vertical" size={24} color="white" style={styles.option} onPress={options}/>
 
  

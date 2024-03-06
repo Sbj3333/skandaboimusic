@@ -41,6 +41,9 @@ const Login = () => {
         "playlist-modify-private",
         "playlist-modify-public",
         "streaming",
+        "user-read-playback-state",
+        "user-read-currently-playing",
+        "user-modify-playback-state"
       ],
       usePKCE: false,
       redirectUri: makeRedirectUri({scheme: 'skandaboimusic', path: 'auth'}),
