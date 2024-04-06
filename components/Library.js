@@ -47,6 +47,7 @@ const Library = () => {
         }
       });
       const data = await response.json();
+      // console.log(JSON.stringify(data, null, 2));
       // console.log(JSON.stringify(data.items[3], null, 2));
       // console.log(JSON.stringify(data.items[3].name, null, 2));
       // console.log(JSON.stringify(data.items[3].images[0].url, null, 2))
@@ -151,19 +152,19 @@ const Library = () => {
     return(
         <Pressable onPress={() => handleplaylist(item.href)}>
           <View style={[styles.playlistcontainer, isLastItem? {marginBottom: 150}: null]}>
-              {item.images[0]?.url ? ( 
+              {/* {item.images[0]?.url ? ( 
                 
                 <Image
                   style={styles.playlistimage}
                   source={{ uri: item.images[0].url }}
-                />
+                /> 
                 
               ) : (
                 <Image
                   style={styles.playlistimage}
                   source={require('../assets/music.jpeg')}/> 
 
-              )}
+              )} */}
               <View style={styles.playlistnamecontainer}>
                   <Text numberOfLines={1} style={styles.playlistname}>{item.name}</Text>
                   <Text numberOfLines={1} style={styles.ownername}>{item.owner.display_name}</Text>
@@ -225,6 +226,7 @@ const Library = () => {
           data={userplaylists} 
           renderItem={renderItem} 
           numColumns={1}/>
+
       </ScrollView>
 
       {/* <BottomModal

@@ -52,7 +52,7 @@ const ActualPlaylist = () => {
   const href = route.params;
   const addedsongs = route.params.addedsongs;
 
-  console.log(route.params);
+  // console.log(route.params);
   // console.log(href);
 
 
@@ -383,6 +383,182 @@ const ActualPlaylist = () => {
     }
   }
 
+  const playSong = async (uri) => {
+    const accessToken = await AsyncStorage.getItem("token");
+    setModalVisible(true);
+  
+    try {
+      const response = await fetch("https://api.spotify.com/v1/me/player/play", {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          "context_uri": uri,
+          // "offset": {
+          //   "position": position
+          // },
+          // "position_ms": positionMs
+        })
+      });
+  
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+  
+      const data = await response.json();
+      console.log("Response from Spotify:", data);
+      // Handle the response data here as needed
+    } catch (error) {
+      console.error('Error playing song:', error);
+    }
+  }
+  
+  const pauseSong = async () => {
+    const accessToken = await AsyncStorage.getItem("token");
+  
+    try {
+      const response = await fetch("https://api.spotify.com/v1/me/player/pause", {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
+      });
+  
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+  
+      const data = await response.json();
+      console.log("Response from Spotify:", data);
+      // Handle the response data here as needed
+    } catch (error) {
+      console.error('Error pausing player:', error);
+    }
+  }
+
+  const next = async () => {
+    const accessToken = await AsyncStorage.getItem("token");
+  
+    try {
+      const response = await fetch("https://api.spotify.com/v1/me/player/next", {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
+      });
+  
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+  
+      const data = await response.json();
+      console.log("Response from Spotify:", data);
+      // Handle the response data here as needed
+    } catch (error) {
+      console.error('Error playing next song:', error);
+    }
+  }
+  
+
+  const previous = async () => {
+    const accessToken = await AsyncStorage.getItem("token");
+  
+    try {
+      const response = await fetch("https://api.spotify.com/v1/me/player/previous", {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
+      });
+  
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+  
+      const data = await response.json();
+      console.log("Response from Spotify:", data);
+      // Handle the response data here as needed
+    } catch (error) {
+      console.error('Error playing previous song:', error);
+    }
+  }
+
+  const seekPosition = async (positionMs) => {
+    const accessToken = await AsyncStorage.getItem("token");
+  
+    try {
+      const response = await fetch(`https://api.spotify.com/v1/me/player/seek?position_ms=${positionMs}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
+      });
+  
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+  
+      const data = await response.json();
+      console.log("Response from Spotify:", data);
+    } catch (error) {
+      console.error('Error seeking position:', error);
+    }
+  }
+
+  const setRepeatState = async (state) => {
+    const accessToken = await AsyncStorage.getItem("token");
+  
+    try {
+      const response = await fetch(`https://api.spotify.com/v1/me/player/repeat?state=${state}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
+      });
+  
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+  
+      const data = await response.json();
+      console.log("Response from Spotify:", data);
+      // Handle the response data here as needed
+    } catch (error) {
+      console.error('Error setting repeat state:', error);
+    }
+  }
+
+  const setShuffleState = async (state) => {
+    const accessToken = await AsyncStorage.getItem("token");
+  
+    try {
+      const response = await fetch(`https://api.spotify.com/v1/me/player/shuffle?state=${state}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
+      });
+  
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+  
+      const data = await response.json();
+      console.log("Response from Spotify:", data);
+      // Handle the response data here as needed
+    } catch (error) {
+      console.error('Error setting shuffle state:', error);
+    }
+  }
+  
+  
+
+  
+  
+  
+
   
   
 
@@ -393,18 +569,48 @@ const ActualPlaylist = () => {
   // console.log("array", Myarray1);
   const Myarray = []
   // const Myarray = new Array();
+  const truefalsearray = []
+
+  const checklikedsongs = async (ids) => {
+    // await renderItem();
+    const accessToken = await AsyncStorage.getItem("token");
+    try {
+      const response = await fetch(`https://api.spotify.com/v1/me/tracks/contains?ids=${ids.join(',')}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
+      });
+      
+      const data = await response.json();
+      // console.log("arraybefore", Myarray);
+      console.log("truth", data);
+      setLiked(data);
+      // console.log("arraylater", Myarray.join(','))
+
+      return data;
+    } catch (error) {
+      console.error('Error fetching Spotify tracks:', error);
+    }
+  }
+  useEffect(() => {
+    checklikedsongs(Myarray);
+  }, []);
 
 
+
+  
 
   const renderItem = ({item, index}) =>{
     const musicuri = item.track.href;
     const musicid = musicuri.split("/").pop()
     // console.log("this is the songuri", musicid);
     Myarray.push(musicid);
+    const example = ['true', 'false']
 
     // setMyarray1(Myarray);
 
-    // console.log("array", Myarray)
+    // console.log("linkarray", Myarray)
     
     const options = () =>{
       setCPModalVisible(!CPmodalVisible);
@@ -424,7 +630,7 @@ const ActualPlaylist = () => {
     
     return( 
       <View style={styles.ultimate}> 
-      <Pressable onPress={() => play(item)} > 
+      <Pressable onPress={() => playSong(item.track.uri)} > 
           <View style={styles.songcontainer}> 
               {item.track.album.images[0]?.url ?(
                <Image source={{uri: item.track.album.images[0].url}} style={styles.songphoto}/>
@@ -443,10 +649,14 @@ const ActualPlaylist = () => {
           </View>
         </Pressable>
 
-        {Myarray[index]?(
-          <AntDesign name="heart" size={22} color="#c70606" style={styles.heart} onPress={handleaddlikedsongs(item.track.href)} />
+        {setLiked[index] == 'true'?(
+          <AntDesign name="heart" size={22} color="#c70606" style={styles.heart} 
+            // onPress={handleaddlikedsongs(item.track.href)} 
+          />
         ):(
-          <AntDesign name="hearto" size={22} color="black" style={styles.heart} onPress={handleremovelikedsongs(item.track.href)}/>
+          <AntDesign name="hearto" size={22} color="white" style={styles.heart} 
+            // onPress={handleremovelikedsongs(item.track.href)}
+          />
         )}  
         <SimpleLineIcons name="options-vertical" size={24} color="white" style={styles.option} onPress={options}/>
 
@@ -458,31 +668,7 @@ const ActualPlaylist = () => {
 
     )
   }
-  const checklikedsongs = async (ids) => {
-    // await renderItem();
-    const accessToken = await AsyncStorage.getItem("token");
-    try {
-      const response = await fetch(`https://api.spotify.com/v1/me/tracks/contains?ids=${ids.join(',')}`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${accessToken}`
-        }
-      });
-      
-      const data = await response.json();
-      console.log("arraybefore", Myarray);
-      console.log(data);
-      setLiked(data);
-      console.log("array", Myarray.join(','))
-
-      return data;
-    } catch (error) {
-      console.error('Error fetching Spotify tracks:', error);
-    }
-  }
-  useEffect(() => {
-    checklikedsongs(Myarray);
-  }, []);
+  
   
   
   
@@ -496,7 +682,7 @@ const ActualPlaylist = () => {
           </Pressable>
           <Text numberOfLines={1} style={styles.text}>{playlistname}</Text>
           <Pressable 
-            onPress={playTrack}
+            // onPress={playTrack}
           >
             {isPlaying ?(
               <Image style={styles.playpause} source={require('../assets/pausesong.png')}/>
@@ -539,7 +725,8 @@ const ActualPlaylist = () => {
         )}
 
         <BottomModal
-          visible={modalVisible}
+          // visible={modalVisible}
+          visible={false}
         //   onHardwareBackPress={() => setModalVisible(false)}
           swipeDirection={["up", "down"]}
           swipeThreshold={200}>
@@ -615,18 +802,24 @@ const ActualPlaylist = () => {
                   </Pressable>
 
 
-                  <Pressable onPress={playPreviousTrack}>
+                  <Pressable 
+                    // onPress={playPreviousTrack}
+                  >
                     <AntDesign name="stepbackward" size={24} color="white" />
                   </Pressable>
 
 
-                  <Pressable onPress={() => {handlePlayPause}}> 
+                  <Pressable 
+                    // onPress={() => {handlePlayPause}}
+                  > 
                     {isPlaying ? (
                       // <Image source={require('../assets/pausesong.png')} style={styles.secondplaypause}/>
                       <AntDesign name="pausecircle" size={36} color="white" />
 
                     ) : (
-                      <Pressable onPress={() => {handlePlayPause}}>
+                      <Pressable 
+                        // onPress={() => {handlePlayPause}}
+                      >
                         {/* <Image source={require('../assets/playsong.png')} style={styles.secondplaypause}/> */}
                         <AntDesign name="play" size={36} color="white" />
 
@@ -640,13 +833,15 @@ const ActualPlaylist = () => {
                   </Pressable> */}
 
 
-                  <Pressable onPress={playNextTrack}>
+                  <Pressable 
+                    // onPress={playNextTrack}
+                  >
                     <AntDesign name="stepforward" size={24} color="white" />
                   </Pressable>
 
 
                   <Pressable 
-                    onPress={handleloop}
+                    // onPre+ss={handleloop}
                   >
                     {loopstatus ?(
                       <MaterialIcons name="repeat" size={28} color="white" />

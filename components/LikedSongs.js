@@ -299,14 +299,18 @@ const LikedSongs = () => {
 
           <View style={styles.optioncontainer}>
             <View style={styles.addtoplaylist}>
-              <Pressable onPress={handleadd(selectedsongurl)}>
+              <Pressable 
+                // onPress={handleadd(selectedsongurl)}
+              >
                 <AntDesign name="plus" size={24} color="white" />
                 <Text style={styles.addname}>Add to Playlist</Text>
               </Pressable>
             </View>
 
             <View style={styles.removeplaylist}>
-              <Pressable onPress={handleremove(selectedsongurl)}>
+              <Pressable 
+                // onPress={handleremove(selectedsongurl)}
+              >
                 <Entypo name="minus" size={24} color="gray" />
                 <Text style={styles.removename}>Remove from this playlist</Text>
               </Pressable>
