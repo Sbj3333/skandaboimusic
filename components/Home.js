@@ -63,8 +63,9 @@ const Home = () => {
       // console.log(data);
       setRecentlyPlayed(tracks);
 
-    } catch{
-      console.log("error from the unknown");
+    } catch(err){
+      // console.log("error from the unknown");
+      console.log(err);
     }
   };
 

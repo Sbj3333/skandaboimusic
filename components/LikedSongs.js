@@ -254,6 +254,7 @@ const LikedSongs = () => {
         // console.log(selectedsongname);
         // console.log(selectedsongartist);
         // console.log(selectedsongurl);
+        console.log("test", JSON.stringify(item.track.album.images));
     }
 
     return(
@@ -281,16 +282,21 @@ const LikedSongs = () => {
 
 
         
-        <BottomModal
+        {/* <BottomModal
         visible={CPmodalVisible}
         swipeDirection={["up", "down"]}
         swipeThreshold={200}>
         <ModalContent style = {{height: '20%', width: '100%', backgroundColor: 'black'}}>
           <Entypo name="minus" size={24} color="gray" />
           <View style={styles.cpimagecontainer}>
-            <Image 
+            {item.track.album.images[0]? (
+              <Image 
               source={{uri: item.track.album.images[0].url}}
               style={styles.cpimage}/>
+            ):(
+              <Image source={require('../assets/music.jpeg')} style={styles.songphoto}/>
+            )}
+            
             <View style={styles.cptextcontainer}>
                 <Text numberOfLines={1} style={styles.songname}>{item.track.name}</Text>
                 <Text numberOfLines={1} style={styles.artistname}>{item.track.artists[0].name}</Text>
@@ -317,7 +323,7 @@ const LikedSongs = () => {
             </View>
           </View>
         </ModalContent>
-        </BottomModal>
+        </BottomModal> */}
       
       </View>
 
@@ -373,6 +379,60 @@ const LikedSongs = () => {
             </View>
           </Pressable>
         )}
+
+        <BottomModal
+          visible={CPmodalVisible}
+          swipeDirection={["down"]}
+          // onBackdropPress={() => setCPModalVisible(false)}
+          swipeThreshold={20}
+          style={styles.cpmodal}
+          onSwipeOut={() => setCPModalVisible(false)}
+          onHardwareBackPress={() => setCPModalVisible(!CPmodalVisible)}>
+            <ModalContent style = {{maxHeight:'100%', width: '100%', backgroundColor: "rgba(0,0,0,0.88)"}}>
+              <View style={styles.cpimagecontainer}>
+                <Image 
+                  // source={{uri: item.track.album.images[0].url}}
+                  source={{uri: selectedphotourl}}
+                  style={styles.cpimage}/>
+                <View style={styles.cptextcontainer}>
+                    <Text numberOfLines={1} style={styles.cpsongname}>{selectedsongname}</Text>
+                    <Text numberOfLines={1} style={styles.cpartistname}>{selectedsongartist}</Text>
+                    {/* <Text>{selectedsongurl}</Text> */}
+                </View>
+                {/* <Pressable 
+                  onPress={() => setCPModalVisible(false)}
+                >
+                  <AntDesign name="close" size={28} color="white" style={styles.xmark}/>
+                  <Entypo name="minus" size={34} color="gray" style={styles.xmark} />
+
+                </Pressable> */}
+
+
+              </View>
+
+              <View style={styles.optioncontainer}>
+                <View >
+                  <Pressable 
+                    onPress={() => handleadd(selectedsongurl)}
+                    style={styles.addtoplaylist}
+                  >
+                    <AntDesign name="plus" size={34} color="white" style={{marginLeft: '2%'}}/>
+                    <Text style={styles.addname}>Add to Playlist</Text>
+                  </Pressable>
+                </View>
+
+                <View >
+                  <Pressable 
+                    onPress={() => handleremove(selectedsongurl)}
+                    style={styles.removeplaylist}
+                  >
+                    <Entypo name="minus" size={34} color="white" style={{marginLeft: '2%'}}/>
+                    <Text style={styles.removename}>Remove from this playlist</Text>
+                  </Pressable>
+                </View>
+              </View>
+            </ModalContent>
+          </BottomModal>
     </SafeAreaView>
   )
 }

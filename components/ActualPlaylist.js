@@ -383,9 +383,15 @@ const ActualPlaylist = () => {
     }
   }
 
+  const handleplay = async(uri) =>{
+    setModalVisible(!modalVisible);
+    playSong(uri);
+  }
+
   const playSong = async (uri) => {
     const accessToken = await AsyncStorage.getItem("token");
     setModalVisible(true);
+    console.log("uri from the api", uri);
   
     try {
       const response = await fetch("https://api.spotify.com/v1/me/player/play", {
@@ -395,7 +401,7 @@ const ActualPlaylist = () => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          "context_uri": uri,
+          "uris": [uri],
           // "offset": {
           //   "position": position
           // },
@@ -403,12 +409,12 @@ const ActualPlaylist = () => {
         })
       });
   
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
+      // if (!response.ok) {
+      //   throw new Error('Network response was not ok');
+      // }
   
-      const data = await response.json();
-      console.log("Response from Spotify:", data);
+      // const data = await response.json();
+      // console.log("Response from Spotify:", data);
       // Handle the response data here as needed
     } catch (error) {
       console.error('Error playing song:', error);
@@ -603,7 +609,9 @@ const ActualPlaylist = () => {
 
   const renderItem = ({item, index}) =>{
     const musicuri = item.track.href;
+    // console.log(musicuri);
     const musicid = musicuri.split("/").pop()
+    // console.log(musicid);
     // console.log("this is the songuri", musicid);
     Myarray.push(musicid);
     const example = ['true', 'false']
@@ -627,10 +635,15 @@ const ActualPlaylist = () => {
       
     }
 
+    // console.log("required url",item.track.uri);
+
     
     return( 
       <View style={styles.ultimate}> 
-      <Pressable onPress={() => playSong(item.track.uri)} > 
+      <Pressable 
+        // onPress={() => playSong(item.track.uri)} 
+        onPress={() => handleplay(item.track.uri)}
+      > 
           <View style={styles.songcontainer}> 
               {item.track.album.images[0]?.url ?(
                <Image source={{uri: item.track.album.images[0].url}} style={styles.songphoto}/>
@@ -725,16 +738,16 @@ const ActualPlaylist = () => {
         )}
 
         <BottomModal
-          // visible={modalVisible}
-          visible={false}
-        //   onHardwareBackPress={() => setModalVisible(false)}
+          visible={modalVisible}
+          // visible={false}
+          onHardwareBackPress={() => setModalVisible(false)}
           swipeDirection={["up", "down"]}
           swipeThreshold={200}>
-            <ModalContent style = {{height: '100%', width: '100%', backgroundColor: 'black', flex: 1, justifyContent: 'flex-end'}}>
             <SafeAreaView>
+              <ModalContent style = {{height: '100%', width: '100%', backgroundColor: 'black'}}>
                 <View style={styles.firstcontainer}>
-                  <Pressable onPress={() => {setModalVisible(false)}}>
-                    <AntDesign name="caretdown" size={24} color="white" style={{marginRight:5, marginBottom:5}}/>
+                  <Pressable onPress={() => {setModalVisible(!modalVisible)}}>
+                    <AntDesign name="caretdown" size={24} color="white" style={{marginRight:5, marginBottom:5}} onPress={() => {setModalVisible(!modalVisible)}}/>
                   </Pressable>
 
                   <View style={styles.textcontainer}>
@@ -748,8 +761,8 @@ const ActualPlaylist = () => {
 
                 <View style={styles.bannercontainer}>
                   <Image 
-                    source={{uri: currentTrack?.track?.album?.images[0].url}} 
-                    // source={require('../assets/music.jpeg')}
+                    // source={{uri: currentTrack?.track?.album?.images[0].url}} 
+                    source={require('../assets/music.jpeg')}
                     style={styles.banner}/>
                 </View>
 
@@ -852,9 +865,9 @@ const ActualPlaylist = () => {
 
                   </Pressable>
                 </View>
-                
-              </SafeAreaView>
-            </ModalContent>
+              </ModalContent>
+
+            </SafeAreaView>
         </BottomModal>
 
 

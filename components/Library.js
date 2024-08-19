@@ -48,7 +48,7 @@ const Library = () => {
       });
       const data = await response.json();
       // console.log(JSON.stringify(data, null, 2));
-      // console.log(JSON.stringify(data.items[3], null, 2));
+      console.log("url check",JSON.stringify(data.items[0], null, 2));
       // console.log(JSON.stringify(data.items[3].name, null, 2));
       // console.log(JSON.stringify(data.items[3].images[0].url, null, 2))
 
@@ -147,12 +147,12 @@ const Library = () => {
   const renderItem = ({item, index}) =>{
     const isLastItem = index === (userplaylists.length - 1); 
     // console.log(item.name);
-    // console.log(item.images[0].url);
+    // console.log(JSON.stringify(item.images[0], null, 2));
     
     return(
         <Pressable onPress={() => handleplaylist(item.href)}>
           <View style={[styles.playlistcontainer, isLastItem? {marginBottom: 150}: null]}>
-              {/* {item.images[0]?.url ? ( 
+              {item.images?  ( 
                 
                 <Image
                   style={styles.playlistimage}
@@ -164,7 +164,7 @@ const Library = () => {
                   style={styles.playlistimage}
                   source={require('../assets/music.jpeg')}/> 
 
-              )} */}
+              )} 
               <View style={styles.playlistnamecontainer}>
                   <Text numberOfLines={1} style={styles.playlistname}>{item.name}</Text>
                   <Text numberOfLines={1} style={styles.ownername}>{item.owner.display_name}</Text>
@@ -223,7 +223,7 @@ const Library = () => {
 
 
         <FlatList 
-          data={userplaylists} 
+          data={userplaylists} images
           renderItem={renderItem} 
           numColumns={1}/>
 
